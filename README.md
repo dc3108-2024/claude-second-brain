@@ -183,6 +183,14 @@ points — adapt them to your domain and trigger phrases.
 
 ---
 
+## Going further
+
+See [`EXTENDING.md`](./EXTENDING.md) for the path from scaffold to production — how
+each skill grows, when to split monolithic skills into composable micro-skills, which
+MCP integrations unlock the most, and what not to build.
+
+---
+
 ## Philosophy
 
 Skills are cheap to build and infinitely reusable. Memory accumulates without effort.
