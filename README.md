@@ -150,10 +150,10 @@ The fix is a clean separation: **`SKILL.md` is the blueprint, `references/` is t
 ## Step 2 — Synthesise
 
 Every item must connect to one of the four lenses:
-NL move · TCS BD · FI 2031 · Thought leadership
+Career · Regulatory · Wealth · Thought leadership
 
-### TCS BD
-What client problem does this reveal? What could [Company] credibly deliver...
+### Career
+What does this mean for my role or positioning? What specific action does it unlock?
 ```
 
 **After** — workflow references the data file:
@@ -168,8 +168,8 @@ Apply each lens to the content. Every item must connect to at least one.
 ```markdown
 # references/lenses.md
 
-## Professional BD
-What client problem does this reveal? What could you credibly deliver...
+## Career
+What does this mean for my role or positioning? What specific action does it unlock?
 ```
 
 **Why it matters:**

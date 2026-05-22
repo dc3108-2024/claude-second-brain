@@ -9,7 +9,7 @@ or context shifts. The SKILL.md workflow stays fixed.
 ## How to define a lens
 
 Each lens needs:
-1. **Name** — short, memorable (e.g. "Career BD", "Financial Independence", "Regulatory")
+1. **Name** — short, memorable (e.g. "Career", "Wealth Building", "Regulatory")
 2. **Question** — the specific thing this lens asks about the content
 3. **Anchors** (optional) — named frameworks, regulations, organisations, or metrics
    that are currently relevant to this lens
@@ -18,10 +18,9 @@ Each lens needs:
 
 ## Example lenses (replace with your own)
 
-### Professional BD
-What client problem does this development reveal or confirm? What could you credibly
-deliver to solve it? Must be specific enough to open a real conversation — name the
-problem, the client type, and the capability.
+### Career
+What does this mean for your role, positioning, or next move? What specific action
+does it unlock — a conversation, a skill to build, a decision to make?
 
 ### Regulatory
 What is relevant to your jurisdiction's current regulatory environment?
