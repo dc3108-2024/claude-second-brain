@@ -148,6 +148,35 @@ you never re-enter account details.
 Add this to your `settings.json` under `PreToolUse`. It blocks accidental skill
 deletion without blocking anything else.
 
+**Extending hooks to project repos:**
+
+The same auto-commit pattern that keeps your skills in sync works for any private
+repo Claude writes to — a knowledge base, a financial tool, a project workspace.
+Add one `Write|Edit` hook and one `Bash` hook per repo:
+
+```json
+{
+  "matcher": "Write|Edit",
+  "hooks": [{
+    "type": "command",
+    "command": "{ f=$(jq -r '.tool_input.file_path // empty'); [[ \"$f\" == */YourProject/* ]] && git -C ~/YourProject add -A && git -C ~/YourProject diff --cached --quiet || { git -C ~/YourProject commit --quiet -m \"auto: update\" && git -C ~/YourProject push --quiet; }; } 2>/dev/null || true",
+    "async": true
+  }]
+},
+{
+  "matcher": "Bash",
+  "hooks": [{
+    "type": "command",
+    "command": "{ cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -q 'YourProject/'; then git -C ~/YourProject add -A && git -C ~/YourProject diff --cached --quiet || { git -C ~/YourProject commit --quiet -m \"auto: update\" && git -C ~/YourProject push --quiet; }; fi; } 2>/dev/null || true",
+    "async": true
+  }]
+}
+```
+
+Both hooks are needed: `Write|Edit` catches files changed via the Edit tool;
+`Bash` catches files written via shell commands (`cat >>`, `python3`, etc.).
+The `diff --cached --quiet` guard prevents empty commits when nothing actually changed.
+
 ---
 
 ## MCP Integrations

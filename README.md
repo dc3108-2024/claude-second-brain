@@ -157,15 +157,37 @@ are loaded on demand when relevant. See `memory/README.md` for the full breakdow
 ## Restoring on a new machine
 
 If your skills and config are in separate private GitHub repos (the recommended
-setup), restore is three commands:
+setup), restore is two commands:
 
 ```bash
 gh auth login
-gh repo clone <your-username>/claude-skills ~/.claude/skills
 gh repo clone <your-username>/claude-config ~/.claude-backup && bash ~/.claude-backup/restore.sh
 ```
 
-Everything — skills, memory, hooks, settings — is back exactly as you left it.
+`restore.sh` handles the rest: config files, memory, skills clone, and any
+additional project repos you've added to the script (see below).
+
+Everything — skills, memory, hooks, settings, project repos — is back exactly
+as you left it.
+
+### Adding project repos to restore.sh
+
+If you have private repos for your KB, financial tools, or other projects that
+Claude writes to, add them to `restore.sh` using the same pattern:
+
+```bash
+MYPROJECT="$HOME/YourProject"
+if [[ -d "$MYPROJECT/.git" ]]; then
+  echo "→ YourProject already present — skipping clone"
+else
+  echo "→ Cloning YourProject..."
+  gh repo clone <your-username>/your-project "$MYPROJECT"
+  echo "  ✓ YourProject cloned"
+fi
+```
+
+Pair each clone with the corresponding auto-sync hook in `settings.json.example`
+and the repo stays current without any manual `git push`.
 
 ---
 

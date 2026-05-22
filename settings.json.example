@@ -37,6 +37,23 @@
             "comment": "Auto-sync config files to backup repo whenever CLAUDE.md, memory, or settings change.",
             "command": "{ f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in */.claude/CLAUDE.md|*/.claude/VOICE_PROFILE.md|*/.claude/settings*.json|*/.claude/agents.json|*/.claude/memory/*.md|*/.claude/projects/*/memory/*.md) python3 ~/.claude/sync-config.py && git -C ~/.claude-backup add -A && git -C ~/.claude-backup commit --quiet -m \"auto: config update\" && git -C ~/.claude-backup push --quiet;; esac; } 2>/dev/null || true",
             "async": true
+          },
+          {
+            "type": "command",
+            "comment": "Auto-commit project repos when their files are written or edited. Replace ~/YourProject with your actual path.",
+            "command": "{ f=$(jq -r '.tool_input.file_path // empty'); [[ \"$f\" == */YourProject/* ]] && git -C ~/YourProject add -A && git -C ~/YourProject diff --cached --quiet || { git -C ~/YourProject commit --quiet -m \"auto: update\" && git -C ~/YourProject push --quiet; }; } 2>/dev/null || true",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Auto-commit project repos when Bash commands write to them. Replace YourProject with your actual directory name.",
+            "command": "{ cmd=$(jq -r '.tool_input.command // empty'); if echo \"$cmd\" | grep -q 'YourProject/'; then git -C ~/YourProject add -A && git -C ~/YourProject diff --cached --quiet || { git -C ~/YourProject commit --quiet -m \"auto: update\" && git -C ~/YourProject push --quiet; }; fi; } 2>/dev/null || true",
+            "async": true
           }
         ]
       }
