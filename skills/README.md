@@ -1,6 +1,6 @@
 # Skills Library
 
-> 6 skills across 6 categories.
+> 8 skills across 7 categories.
 
 ### Intelligence & Research
 
@@ -49,6 +49,15 @@
 | Skill | What it does |
 |-------|--------------|
 | [`life-lens`](./life-lens/SKILL.md) | Filter any content, decision, or idea through your personal values and goals. |
+
+### Mac Integrations
+
+> Native Mac app integrations — Calendar, Reminders, and beyond. Mac only, no API keys required.
+
+| Skill | What it does |
+|-------|--------------|
+| [`apple-calendar`](./apple-calendar/SKILL.md) | Create an event in Apple Calendar from natural language. |
+| [`apple-reminders`](./apple-reminders/SKILL.md) | Add a reminder to the Apple Reminders app from natural language. |
 
 ---
 

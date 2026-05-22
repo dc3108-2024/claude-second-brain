@@ -49,6 +49,11 @@ CATEGORIES = [
         ["life-lens"],
     ),
     (
+        "Mac Integrations",
+        "Native Mac app integrations — Calendar, Reminders, and beyond. Mac only, no API keys required.",
+        ["apple-calendar", "apple-reminders"],
+    ),
+    (
         "System & Infrastructure",
         "Skills for building skills, managing memory, and maintaining your setup",
         [],   # add your system skills here
