@@ -125,11 +125,60 @@ demand and follows it exactly.
 skill-name/
 ├── SKILL.md          # The workflow — steps, triggers, quality rules (~150 lines max)
 ├── scripts/          # Executable code invoked by the workflow (optional)
-└── references/       # Stable data: templates, rubrics, filter matrices (optional)
+└── references/       # Persona data and config: lenses, paths, scenarios (optional)
 ```
 
-**`SKILL.md` only describes the workflow.** Code goes in `scripts/`, data goes in
-`references/`. This keeps the instruction file readable and the code testable.
+**`SKILL.md` only describes the workflow.** Code goes in `scripts/`, data goes in `references/`.
+
+### Blueprint vs Data — the most important pattern
+
+The easiest mistake when building personal skills is letting persona-specific data creep into `SKILL.md`. It starts small: you hardcode your own file path, embed your domain focus, inline your financial targets. Over time every skill becomes a mix of workflow logic and personal data — and changing anything means editing the skill itself.
+
+The fix is a clean separation: **`SKILL.md` is the blueprint, `references/` is the data.**
+
+| What belongs in `SKILL.md` | What belongs in `references/` |
+|---|---|
+| Steps and decision logic | File paths and folder locations |
+| Output format templates | Personal lenses and analytical filters |
+| Quality rules and conditions | Financial scenarios and account details |
+| Orchestration (which sub-skills to call) | Domain context and professional role |
+| Trigger phrases | Search topics and trusted sources |
+
+**Before** — data embedded in the workflow:
+
+```markdown
+## Step 2 — Synthesise
+
+Every item must connect to one of the four lenses:
+NL move · TCS BD · FI 2031 · Thought leadership
+
+### TCS BD
+What client problem does this reveal? What could [Company] credibly deliver...
+```
+
+**After** — workflow references the data file:
+
+```markdown
+## Step 2 — Synthesise
+
+Read `references/lenses.md` for the current lens definitions.
+Apply each lens to the content. Every item must connect to at least one.
+```
+
+```markdown
+# references/lenses.md
+
+## Professional BD
+What client problem does this reveal? What could you credibly deliver...
+```
+
+**Why it matters:**
+- A lens changes → edit `references/lenses.md`, not the skill
+- A new account → edit `references/financial-config.md`, not the skill
+- Share a skill → swap or strip `references/`, the workflow is intact
+- Audit a skill → `SKILL.md` tells you HOW, `references/` tells you FOR WHOM
+
+The `lens-synthesis` skill in this repo is the canonical example of this pattern.
 
 ### Adding a new skill
 
