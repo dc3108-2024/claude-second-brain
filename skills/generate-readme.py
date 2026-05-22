@@ -39,9 +39,14 @@ CATEGORIES = [
         ["financial-os"],
     ),
     (
-        "Content & Communication",
-        "Drafting posts, preparing meetings, and structured communication",
-        [],   # add your comms skills here
+        "Voice & Content",
+        "Write in your own voice — not a bot's. Templates for thought leadership and communication.",
+        ["voice-profile"],
+    ),
+    (
+        "Values & Alignment",
+        "Filter decisions and content through what actually matters to you",
+        ["life-lens"],
     ),
     (
         "System & Infrastructure",

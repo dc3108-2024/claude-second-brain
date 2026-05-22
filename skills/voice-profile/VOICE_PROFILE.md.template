@@ -1,0 +1,130 @@
+# Voice Profile — [Your Name]
+
+This file tells Claude how you write. Fill it in with brutal honesty.
+The more specific you are, the less you'll sound like a bot.
+
+Save the completed version as `~/.claude/VOICE_PROFILE.md`.
+
+---
+
+## Who I am (in one paragraph)
+
+[Write 3–5 sentences about your professional identity, perspective, and what
+you care about. Write it as if you're introducing yourself to a peer — not a
+recruiter. This sets the tone for everything Claude writes for you.]
+
+Example:
+> I'm a [role] who thinks in systems. I've spent [N] years in [domain] and I'm
+> most interested in [specific intersection]. I write to share what I've actually
+> learned, not to demonstrate that I'm learning. I have opinions and I state them.
+
+---
+
+## Tone
+
+**I am:**
+- [e.g. Direct. I say what I mean without softening it.]
+- [e.g. Curious. I like connecting ideas across domains.]
+- [e.g. Measured. I don't overpromise or oversell.]
+
+**I am not:**
+- [e.g. Corporate. I don't use buzzwords or management-speak.]
+- [e.g. Performatively humble. I don't fake uncertainty I don't have.]
+- [e.g. Exclamatory. I don't use exclamation marks to signal enthusiasm.]
+
+---
+
+## Sentence rhythm
+
+[Describe how your sentences actually feel. Examples:]
+- Short bursts when making a point. Longer sentences to build context and explain nuance.
+- I vary length deliberately — short sentences land hard, long ones carry reasoning.
+- I use fragments when I want impact. This is one.
+
+---
+
+## Vocabulary
+
+**Words and phrases I naturally use:**
+- [list 5–10 words or phrases you actually use]
+- [e.g. "compound", "deliberate", "in practice", "the real question is"]
+
+**Words and phrases I never use:**
+- [list the ones that make you cringe]
+- [e.g. "synergy", "leverage" (as a verb), "circle back", "double-click on that"]
+- [e.g. "delve", "it's worth noting", "in today's fast-paced world"]
+
+---
+
+## Structure preferences
+
+**How I open:**
+[e.g. With a provocation or a concrete observation — never a question, never a definition.]
+
+**How I build an argument:**
+[e.g. State the position first. Then the evidence. Then the implication. I don't
+bury the point.]
+
+**How I close:**
+[e.g. With a single sharp line. Not a summary. Not a call to action. A thought
+that lands and stays.]
+
+---
+
+## What I write about
+
+**Primary domains:**
+- [Your field 1]
+- [Your field 2]
+- [Your field 3]
+
+**The intersection I own:**
+[The specific angle that's yours — where two or more of your domains meet in a
+way that's non-obvious. This is where your most original content lives.]
+
+---
+
+## Platform-specific notes
+
+**LinkedIn:**
+[e.g. No emojis. No bullet points in post body. Paragraphs max 3 lines.
+Hook must be a statement, not a question. End with one genuine question.]
+
+**Email:**
+[e.g. Subject lines are short and specific. First sentence says what I want.
+No "I hope this finds you well."]
+
+**[Add your own platforms]**
+
+---
+
+## What bad AI writing looks like for me
+
+[List the specific things Claude tends to produce that make you cringe.
+These are your hard stops.]
+
+- [e.g. Opening with "In today's rapidly evolving landscape..."]
+- [e.g. Using "it's important to note that" as a filler phrase]
+- [e.g. Ending with "What do you think? I'd love to hear your thoughts!"]
+- [e.g. Listing when prose would be stronger]
+- [e.g. Adding a disclaimer paragraph at the end]
+
+---
+
+## A reference sample
+
+[Paste 1–3 paragraphs you've written that you're proud of. This is the gold
+standard Claude should match. If you don't have one, write one now — the act
+of writing it will teach you more about your voice than filling in the fields above.]
+
+```
+[Paste your sample here]
+```
+
+---
+
+## Last updated
+
+[Date] — update this file when your voice evolves or when you notice Claude
+drifting back toward generic. The profile should reflect who you are now,
+not who you were when you first wrote it.

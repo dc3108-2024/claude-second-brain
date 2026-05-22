@@ -1,6 +1,6 @@
 # Skills Library
 
-> 4 skills across 4 categories.
+> 6 skills across 6 categories.
 
 ### Intelligence & Research
 
@@ -33,6 +33,22 @@
 | Skill | What it does |
 |-------|--------------|
 | [`financial-os`](./financial-os/SKILL.md) | Personal financial operating system. |
+
+### Voice & Content
+
+> Write in your own voice — not a bot's. Templates for thought leadership and communication.
+
+| Skill | What it does |
+|-------|--------------|
+| [`voice-profile`](./voice-profile/SKILL.md) | Apply your personal writing voice to any content — LinkedIn posts, emails, articles, summaries, or reports. |
+
+### Values & Alignment
+
+> Filter decisions and content through what actually matters to you
+
+| Skill | What it does |
+|-------|--------------|
+| [`life-lens`](./life-lens/SKILL.md) | Filter any content, decision, or idea through your personal values and goals. |
 
 ---
 
