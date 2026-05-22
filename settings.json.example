@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:*)",
+      "Bash(python3 *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  },
+  "theme": "dark",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,sys,re;data=json.load(sys.stdin);cmd=data.get('tool_input',{}).get('command','');patterns=[r'rm\\b[^|;]*SKILL\\.md',r'rm\\b[^|;]*\\.claude/skills'];blocked=any(re.search(p,cmd) for p in patterns);print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','permissionDecision':'deny','permissionDecisionReason':'Blocked: deleting SKILL.md files is not allowed.'}})) if blocked else None;sys.exit(2) if blocked else sys.exit(0)\"",
+            "statusMessage": "Checking skill file protection..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Auto-commit skills to GitHub whenever a SKILL.md is written or edited.",
+            "command": "{ f=$(jq -r '.tool_input.file_path // empty'); [[ \"$f\" == */.claude/skills/* ]] && git -C ~/.claude/skills add -A && git -C ~/.claude/skills commit --quiet -m \"auto: skill update\" && git -C ~/.claude/skills push --quiet; } 2>/dev/null || true",
+            "async": true
+          },
+          {
+            "type": "command",
+            "comment": "Auto-sync config files to backup repo whenever CLAUDE.md, memory, or settings change.",
+            "command": "{ f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in */.claude/CLAUDE.md|*/.claude/VOICE_PROFILE.md|*/.claude/settings*.json|*/.claude/agents.json|*/.claude/memory/*.md|*/.claude/projects/*/memory/*.md) python3 ~/.claude/sync-config.py && git -C ~/.claude-backup add -A && git -C ~/.claude-backup commit --quiet -m \"auto: config update\" && git -C ~/.claude-backup push --quiet;; esac; } 2>/dev/null || true",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Regenerate README.md before every commit so the skills index stays in sync.
+python3 "$(git rev-parse --show-toplevel)/generate-readme.py" && \
+  git add "$(git rev-parse --show-toplevel)/README.md"

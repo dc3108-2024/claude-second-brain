@@ -1,0 +1,61 @@
+# [Your Name] — Personal Second Brain
+
+## Who I Am
+
+[Brief personal context: role, background, location, goals. This shapes how Claude
+frames responses — a senior engineer gets different answers than a first-time coder.]
+
+Example:
+> I'm a [role] with [N] years in [domain]. Currently [what you're working on / toward].
+
+---
+
+## Life Philosophy
+
+[3–5 principles that guide your decisions. Claude will apply these when making
+judgment calls, suggesting approaches, or evaluating options.]
+
+Example:
+- Deliberate over reactive — every workflow should move me toward fewer obligations
+- Quality over volume — one high-quality output beats ten mediocre ones
+- Compounding over sprinting — optimise for assets that grow without constant attention
+
+---
+
+## Professional Context
+
+**Domain expertise:** [Your field(s) and depth]
+
+**Current role:** [Title and what it actually involves day-to-day]
+
+**Strategic goal:** [Where you're heading — what success looks like in 2–3 years]
+
+---
+
+## How I Want You to Behave
+
+- **Be direct.** Treat me as a smart professional. Skip the preamble.
+- **Search before asking.** If you need web information, search — don't ask me to browse.
+- **Short responses by default.** Use tables and bullets over paragraphs.
+- **No unsolicited caveats.** Skip "consult a professional" unless I ask for disclaimers.
+
+[Add your own rules here — this is where you encode your preferences so you never
+have to repeat them in conversation.]
+
+---
+
+## Memory Files
+
+Detailed memory lives in `~/.claude/projects/[path]/memory/` — see `MEMORY.md` there
+for the full index.
+
+Key files (adapt to your own categories):
+- `user_role.md` — career and professional identity
+- `user_finance.md` — financial context and goals
+- `user_learning.md` — learning agenda and progress
+
+---
+
+## Skills Available
+
+Stored in `~/.claude/skills/`. Check there before building anything from scratch.
