@@ -1,6 +1,6 @@
 # Extending the Scaffold
 
-The six skills in this repo are starting points, not ceilings. Each one maps to a
+The skills in this repo are starting points, not ceilings. Each one maps to a
 richer pattern that emerges once you've used the scaffold for a few weeks and know
 where it's slow.
 
@@ -168,6 +168,40 @@ MCP integrations are the highest-leverage extension because they connect Claude 
 systems where your information actually lives — not just files on disk.
 
 Add them one at a time. Each one you add expands what your skills can see.
+
+---
+
+## Mac Integrations
+
+**Scaffold gives you:** `apple-calendar` and `apple-reminders` — create Calendar events
+and Reminders entries from natural language, synced to iPhone via iCloud.
+
+Both use `osascript` + a small Python script. No API keys, no MCP server, no external
+dependencies — just Claude calling a script that talks directly to the app.
+
+**The pattern is reusable for any scriptable Mac app:**
+
+| App | What you can do |
+|---|---|
+| Calendar | Create, search, and delete events |
+| Reminders | Create reminders with due dates and lists |
+| Notes | Read and write note content |
+| Contacts | Look up contact details |
+| Messages | Send iMessages (use carefully) |
+| Music | Control playback, query library |
+
+Any app that supports AppleScript can be wired up with the same `osascript` approach.
+The skill just needs to know the right AppleScript vocabulary for that app.
+
+**To add a new Mac integration:**
+
+1. Test the AppleScript in Script Editor first — iterate there before putting it in a skill
+2. Move the working script to `scripts/your_script.py` using `subprocess.run(["osascript", "-e", script])`
+3. Pass parameters as f-string variables — never let user input touch the script string directly (injection risk)
+4. Run `osascript -e 'tell application "AppName" to ...'` to discover available properties before writing the skill
+
+**Setup reminder:** your Calendar and Reminders list names will differ from the defaults.
+Run the discovery commands in each skill's Setup section before first use.
 
 ---
 
