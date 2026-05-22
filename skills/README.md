@@ -1,6 +1,6 @@
 # Skills Library
 
-> 2 skills across 2 categories.
+> 4 skills across 4 categories.
 
 ### Intelligence & Research
 
@@ -17,6 +17,22 @@
 | Skill | What it does |
 |-------|--------------|
 | [`process-diagram`](./process-diagram/SKILL.md) | Turn any process description, document, or system into a clean draw.io flow diagram. |
+
+### Learning OS
+
+> Capture, synthesise, connect, and recall knowledge systematically
+
+| Skill | What it does |
+|-------|--------------|
+| [`learning-os`](./learning-os/SKILL.md) | Personal learning operating system. |
+
+### Financial OS
+
+> Portfolio aggregation, net worth tracking, and financial independence modelling
+
+| Skill | What it does |
+|-------|--------------|
+| [`financial-os`](./financial-os/SKILL.md) | Personal financial operating system. |
 
 ---
 

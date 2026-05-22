@@ -29,14 +29,14 @@ CATEGORIES = [
         ["process-diagram"],
     ),
     (
-        "Learning",
-        "Capture, synthesise, and recall knowledge systematically",
-        [],   # add your learning skills here
+        "Learning OS",
+        "Capture, synthesise, connect, and recall knowledge systematically",
+        ["learning-os"],
     ),
     (
-        "Personal Finance",
-        "Portfolio tracking, FIRE modelling, and financial decision support",
-        [],   # add your finance skills here
+        "Financial OS",
+        "Portfolio aggregation, net worth tracking, and financial independence modelling",
+        ["financial-os"],
     ),
     (
         "Content & Communication",
