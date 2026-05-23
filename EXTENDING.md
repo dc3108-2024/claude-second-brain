@@ -179,6 +179,185 @@ The `diff --cached --quiet` guard prevents empty commits when nothing actually c
 
 ---
 
+## Feedback Loops
+
+**Scaffold gives you:** Automation that runs when you trigger it.
+
+**What grows naturally:**
+
+Once your skill library is producing consistent output — weekly briefs, KB captures,
+session notes — the next move is closing the feedback loops. Instead of output that
+you read once and forget, the system starts feeding its own inputs.
+
+Three loops, in order of implementation complexity:
+
+---
+
+### Loop 1 — Briefs → KB
+
+**Problem:** You read a brief, find a useful concept, and don't capture it.
+
+**Pattern:** After a brief skill generates its PDF, it calls a sync sub-skill that
+extracts the top 3 structurally significant concepts — named patterns, not news — and
+runs each one through the full KB capture pipeline.
+
+```markdown
+## Final step in your brief skill
+
+### Step N — Sync to KB
+Invoke `second-brain-sync` with BRIEF_TYPE + the full WEB_INTEL + SYNTHESIS blocks verbatim.
+```
+
+```markdown
+# second-brain-sync/SKILL.md
+
+Extract exactly 3 concepts that satisfy:
+1. A named pattern, framework, or principle — not a news item or vendor announcement
+2. Structurally generalisable beyond this week's data
+3. Not reducible to "X shipped Y feature"
+
+For each concept, run sequentially:
+a. kb-synthesiser
+b. learning-os-logger
+c. lattice-updater
+d. life-lens-updater
+```
+
+The rule "named pattern, not news" is what separates KB-worthy from noise. A trend
+briefing produces dozens of facts; three durable patterns is a good week.
+
+---
+
+### Loop 2 — Session → alignment
+
+**Problem:** You revise a goal mid-conversation but the change never lands in your
+personal alignment filter — so the next session still uses stale criteria.
+
+**Pattern:** A `PostSessionStop` hook fires a Python script after every session ends.
+The script reads the transcript, looks for explicit signal phrases, and calls
+`life-lens-updater` if it finds one.
+
+```json
+{
+  "matcher": "PostSessionStop",
+  "hooks": [{
+    "type": "command",
+    "command": "/opt/homebrew/bin/python3 ~/your-workspace/scripts/session_lens_sync.py \"$CLAUDE_SESSION_ID\"",
+    "async": true
+  }]
+}
+```
+
+Signal phrases worth detecting (adapt to your vocabulary):
+
+```python
+SIGNALS = {
+    "GOAL_REVISION":       ["from now on", "I've decided", "I'm dropping", "changing my approach"],
+    "MILESTONE_COMPLETE":  ["we've finished", "that's done", "marked complete", "shipped"],
+    "PRIORITY_SHIFT":      ["deprioritising", "no longer pursuing", "moving this to later"],
+    "STRATEGY_ABANDONED":  ["not doing this", "dropping", "cancelling"],
+}
+```
+
+The script should: find the signal → build a short summary → pass it to
+`life-lens-updater` → exit 0 always (never block the session from closing).
+
+This loop only works if your alignment filter is actually used in synthesis skills.
+If `life-lens` drives what your briefs emphasise, updating it has immediate effect
+on the next brief.
+
+---
+
+### Loop 3 — KB → research bias
+
+**Problem:** Dense areas of your KB get denser (you keep capturing what you already
+know) while sparse areas stay sparse (you never notice the gap).
+
+**Pattern:** A weekly script scans your KB, counts entries per subdirectory, and
+writes a shared focus-bias file. Any skill that generates content reads this file
+at Step 0 and adjusts its synthesis accordingly.
+
+```python
+# scripts/kb_frontier.py — run Sunday night via cron
+
+KB_ROOT = Path("~/LearningOS/kb").expanduser()
+FRONTIER_PATH = Path("~/.claude/skills/shared/kb-frontier.md").expanduser()
+
+SPARSE_THRESHOLD = 5
+DENSE_THRESHOLD = 15
+
+def count_kb_entries(kb_root):
+    counts = {}
+    for md_file in kb_root.rglob("*.md"):
+        parts = md_file.relative_to(kb_root).parts
+        if len(parts) >= 2 and not md_file.name.startswith("_"):
+            key = "/".join(parts[:-1])
+            counts[key] = counts.get(key, 0) + 1
+    return counts
+```
+
+The output file (`shared/kb-frontier.md`) is read by any skill that benefits
+from knowing where the KB is thin:
+
+```markdown
+# KB Frontier
+Generated: 2026-05-23
+
+## Sparse areas (boost in this week's briefs)
+| KB area | Entry count |
+|---|---|
+| philosophy | 3 |
+| personal-finance | 3 |
+
+## Dense areas (already well covered)
+| KB area | Entry count |
+|---|---|
+| frameworks | 19 |
+| agentic-ai | 18 |
+
+## This week's focus bias
+Prioritise: philosophy, personal-finance
+De-emphasise: frameworks, agentic-ai
+```
+
+Inject it into any synthesis prompt:
+
+```markdown
+## Step 0 — KB Frontier Check
+
+Read `~/.claude/skills/shared/kb-frontier.md`.
+
+If the file exists and `Generated:` is within the last 7 days:
+- Extract the "This week's focus bias" section as FOCUS_BIAS
+
+Otherwise:
+- Set FOCUS_BIAS = "No frontier data — treat all areas equally"
+
+FOCUS_BIAS is applied in Step 1 when a concept could fit multiple domains.
+```
+
+**Where to inject FOCUS_BIAS:**
+- Weekly brief synthesis skills — weight sparse areas in concept extraction
+- `kb-synthesiser` — when a concept spans multiple domains, prefer the sparse one
+- Any capture pipeline that classifies domain before writing
+
+The frontier file is the shared state that connects all three loops. Loop 1 adds
+entries to the KB. Loop 3 reads the KB and adjusts what Loop 1 captures next week.
+
+---
+
+### What makes loops work
+
+Three properties that distinguish a loop from a one-off automation:
+
+1. **Shared state** — a file or DB that persists between runs and carries signal forward
+2. **Low-friction read** — any skill can read the shared state in one step at the top
+3. **Always-exit-0 scripts** — loop scripts must never block the foreground workflow.
+   If `session_lens_sync.py` crashes, the session still closes. If `kb_frontier.py`
+   fails, the brief still generates. Loops are additive, not load-bearing.
+
+---
+
 ## MCP Integrations
 
 **Scaffold gives you:** No MCP dependencies — deliberately, so the base setup works

@@ -189,6 +189,26 @@ The `lens-synthesis` skill in this repo is the canonical example of this pattern
 
 ---
 
+## Feedback loops
+
+Skills are one-directional by default — you trigger them, they produce output.
+The next level is closing the loop so the system compounds without prompting.
+
+Three patterns that self-reinforce over time:
+
+| Loop | Trigger | What happens |
+|---|---|---|
+| **Briefs → KB** | After each weekly brief | A sync skill extracts the top structurally significant concepts and writes them to the KB automatically — no manual capture step |
+| **Session → alignment** | Every session end (`PostSessionStop` hook) | A script detects explicit goal-revision signals in the transcript and updates your personal alignment filter if found |
+| **KB → research bias** | Weekly cron (e.g. Sunday night) | A script scans the KB, classifies sparse vs dense areas, and writes a shared focus-bias file — injected into both briefs and the capture pipeline so the system naturally fills gaps |
+
+The shared state is a single file (`shared/kb-frontier.md`). Written once a week
+by a cron script, read by any skill that benefits from knowing where the KB is thin.
+
+See [EXTENDING.md](./EXTENDING.md) for implementation details on all three loops.
+
+---
+
 ## Memory
 
 Claude's memory system persists facts, preferences, and project context across
