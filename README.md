@@ -6,6 +6,14 @@ from scratch every session.
 
 ---
 
+## Architecture
+
+[![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
+
+*[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
+
+---
+
 ## The idea
 
 Most people use AI reactively — ask a question, get an answer, move on.
