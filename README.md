@@ -6,11 +6,13 @@ from scratch every session.
 
 ---
 
+<!-- ARCH-DIAGRAM-START -->
 ## Architecture
 
 [![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
 
 *[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
+<!-- ARCH-DIAGRAM-END -->
 
 ---
 
@@ -23,22 +25,6 @@ This setup is different. It's built on a single principle:
 
 That means persistent memory, reusable skills, version-controlled configuration,
 and automation that runs without you having to remember to trigger it.
-
----
-
-## Architecture
-
-[![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
-
-*[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
-
----
-
-## Architecture
-
-[![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
-
-*[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
 
 ---
 
