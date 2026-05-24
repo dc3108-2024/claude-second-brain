@@ -26,6 +26,14 @@ and automation that runs without you having to remember to trigger it.
 
 ---
 
+## Architecture
+
+[![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
+
+*[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
+
+---
+
 ## What's in this repo
 
 ```
