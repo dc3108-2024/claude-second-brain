@@ -1,155 +1,97 @@
 ---
 name: financial-os
 description: >
-  Personal financial operating system. Aggregates holdings across accounts and
-  platforms, tracks net worth over time, models financial independence scenarios,
-  and answers questions about your financial position. Triggers on: "what's my
-  net worth", "FIRE status", "how am I tracking", "refresh my portfolio",
-  "am I on track", "run the numbers", "financial update".
+  Personal financial operating system. Ingests investment statements, tracks
+  corpus across all accounts, runs FIRE retirement projections, and surfaces
+  portfolio intelligence. Triggers on: "what's my FIRE status", "run the
+  numbers", "update my corpus", "am I on track", "ingest my statements",
+  "portfolio pointers", "financial update". Skip if the user only wants the
+  Excel workbook rebuilt — use portfolio-refresh instead.
 ---
 
 # Financial OS
 
-A personal financial operating system built on Claude Code. Aggregates your
-holdings, tracks progress toward financial independence, and surfaces the
-decisions that actually move the needle.
+Personal financial intelligence layer. Ingests statements from all platforms,
+normalises to a single corpus figure, and runs retirement math against your
+configured FIRE scenarios.
 
-Adapt the file paths, platforms, and goal parameters in
-`references/config.md` before first use.
-
----
-
-## Step 1 — Load configuration
-
-Read `references/config.md`. Extract:
-- **Goal corpus:** the target number for financial independence
-- **Annual spend:** projected retirement living cost
-- **Withdrawal rate:** safe withdrawal rate (default 4%)
-- **Target year:** when you want to reach FI
-- **Platforms:** list of investment/savings accounts to aggregate
-- **Input folder:** where statement files are stored
+**Configuration:** all persona-specific data is in `references/`. The scripts
+never hardcode paths, rates, or personal details.
 
 ---
 
-## Step 2 — Aggregate holdings
+## Triggers
 
-For each platform in the config, check the input folder for the latest statement
-(PDF, Excel, or CSV). Extract:
-
-| Field | What to capture |
+| What the user says | What to run |
 |---|---|
-| Platform / account name | As labeled in the statement |
-| Asset class | Equities, bonds, cash, property, crypto, other |
-| Current value | In local currency |
-| Cost base | Original amount invested (if available) |
-| Unrealised gain/loss | Current value minus cost base |
-
-If a statement is missing or stale (> 30 days old), flag it — don't fabricate.
-
-Consolidate into a single holdings table sorted by value descending.
+| "FIRE status" / "run the numbers" / "am I on track" | `run.py --no-ingest --all-scenarios` — instant, no API calls |
+| "Update corpus" / "ingest statements" / file dropped | `run.py --all-scenarios` — full ingest + FIRE sweep |
+| "Portfolio pointers" | `python3 -m intelligence.pointers` |
+| "Compare scenarios" | `run.py --no-ingest --all-scenarios` |
+| Specific scenario | `run.py --no-ingest --scenario <key>` |
 
 ---
 
-## Step 3 — Calculate net worth snapshot
+## Scripts
 
-```
-Total assets     = sum of all platform values
-Total liabilities = mortgages + loans + credit balances (from config)
-Net worth        = Total assets − Total liabilities
-```
+All scripts live in `~/.claude/skills/financial-os/scripts/`. Always `cd` there first.
 
-Compare to previous snapshot if one exists in `references/snapshots.md`.
-Calculate change in absolute terms and percentage.
+```bash
+SCRIPTS=~/.claude/skills/financial-os/scripts
 
----
+# FIRE status — instant (no API)
+cd $SCRIPTS && python3 run.py --no-ingest --all-scenarios
 
-## Step 4 — FIRE projection
+# Full ingest — picks up new/changed statements
+cd $SCRIPTS && python3 run.py --all-scenarios
 
-```
-FI number        = Annual spend ÷ Withdrawal rate
-                   (e.g. $40,000 ÷ 0.04 = $1,000,000)
+# Interactive CLI — change scenario, see yearly buildup
+cd $SCRIPTS && python3 cli.py
 
-Gap to FI        = FI number − Current net worth (investable assets only)
+# Demo mode — hides all figures (safe to share screen)
+cd $SCRIPTS && python3 run.py --no-ingest --all-scenarios --demo
 
-Years to FI      = solve for N in:
-                   FV = PV × (1 + r)^N + PMT × ((1 + r)^N − 1) / r
-                   where r = expected annual return (from config)
-                         PMT = annual savings rate (from config)
-```
-
-Show three scenarios: conservative (r − 2%), base (r), optimistic (r + 2%).
-
----
-
-## Step 5 — Asset allocation check
-
-Calculate actual allocation vs. target allocation (from config):
-
-| Asset class | Target % | Actual % | Drift |
-|---|---|---|---|
-| Equities | X% | Y% | ±Z% |
-| Bonds | … | … | … |
-| Cash | … | … | … |
-
-Flag any class drifted > 5% from target.
-
----
-
-## Step 6 — Deliver the dashboard
-
-Output format:
-
-```
-## Financial Snapshot — [Date]
-
-**Net Worth:** $X  (+$Y / +Z% since last update)
-**FI Number:** $X  (based on $Y/yr at Z% withdrawal)
-**Progress:**  X% of FI number
-**Gap:**       $X remaining
-**On track:**  Yes / No — [one sentence why]
-
-### Scenarios
-| Scenario | Return | Years to FI | FI date |
-|---|---|---|---|
-| Conservative | X% | N | YYYY |
-| Base | X% | N | YYYY |
-| Optimistic | X% | N | YYYY |
-
-### Holdings Summary
-[Top-level table by asset class]
-
-### Flags
-- [Any missing statements, allocation drift, or decisions pending]
+# Portfolio intelligence pointers
+cd $SCRIPTS && python3 -m intelligence.pointers
 ```
 
 ---
 
-## Step 7 — Save snapshot
+## How the pipeline works
 
-Append the net worth figure and date to `references/snapshots.md` for
-longitudinal tracking. One line per update:
-
-```
-2026-05-22 | $XXX,XXX | +$X,XXX since last
-```
-
----
-
-## Extending this scaffold
-
-- **Tax module:** add a step that calculates estimated capital gains and income tax
-  based on your jurisdiction's rules
-- **Budget module:** feed in monthly spending data and compare to plan
-- **Scenario module:** model specific decisions — "what if I reduce contributions
-  for 12 months?" or "what if I retire 2 years early?"
-- **Statement pipeline:** automate extraction from downloaded PDFs using `pdfplumber`
-  (see the pdf skill for extraction patterns)
+1. `statement_manifest.py` — fingerprint every file; skip unchanged
+2. `parse_transactions.py` — transaction CSVs → cost basis (no Claude call)
+3. `extract.py` + `parse.py` — balance files → `claude -p` → rich schema JSON
+4. `ingest.py` — delta-merge into `portfolio_data.json`
+5. `_auto_transform()` in `run.py` — persist cost basis + run `transform.py` → `data/portfolio.json`
+6. `retirement.py` — SWR FIRE math per scenario
+7. `pointers.py` — cross-reference KB × portfolio (run manually)
 
 ---
 
-## Quality rules
+## Configuration files (in `references/`)
 
-- Never fabricate a number — if data is missing, say so and flag what's needed
-- All projections show assumptions explicitly (return rate, savings rate, inflation)
-- The dashboard should be readable in under 2 minutes
-- One clear "on track / off track" verdict every time
+| File | What it controls |
+|---|---|
+| `financial-config.md` | Snapshot of scenarios, statement sources, last known corpus |
+| `platform_map.json` | Platform name → account_type mapping (loaded by transform.py) |
+| `fx_rates.json` | Fallback FX rates when data/portfolio.json meta is missing |
+| `exclusions.json` | Statement files to skip in both skill paths |
+
+Update `references/` — never edit SKILL.md for data changes.
+
+---
+
+## When to run ingest vs no-ingest
+
+- New statements dropped → `run.py --all-scenarios` (ingest + FIRE)
+- Just checking status → `run.py --no-ingest` (instant, free)
+- Changed a scenario assumption → `run.py --no-ingest`
+- Screen sharing / demo → add `--demo` to any command
+
+---
+
+## Last known corpus
+
+See `references/financial-config.md` for the most recent snapshot.
+Update it after every refresh run.
