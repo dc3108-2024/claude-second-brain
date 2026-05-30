@@ -70,9 +70,11 @@ This scaffold gives you the skill definitions and config templates. You need to 
 
 ## Adapting the scaffold
 
-### 1 — Fill in `references/config.md`
+### 1 — Fill in `references/financial-config.md`
 
 This is the only file that contains personal data. Everything else is generic workflow.
+In the scaffold this is named `references/config.md` — rename it to `financial-config.md`
+so it matches the naming convention used by both `financial-os` and `portfolio-refresh`.
 
 Key fields to set:
 - `input_folder` — where your statements live
