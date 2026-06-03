@@ -219,6 +219,31 @@ See [EXTENDING.md](./EXTENDING.md) for implementation details on all three loops
 
 ---
 
+## Self-governing AI operations monitor
+
+Every Claude call made by a skill is logged, classified by root cause, and surfaced in a weekly report — with a human approval gate before any fix ships.
+
+```
+Instrument → Analyse → Queue → HITL Review → Enforce → Reset → repeat
+```
+
+**Four failure classes detected automatically:**
+
+| Type | What it means | Fix |
+|---|---|---|
+| Hard failure | Sporadic prompt/critique quality issue | Fix prompt or critique |
+| JSON failure | Model returned plain text instead of JSON | Add fallback rule to prompt |
+| Critique strict | Valid output rejected by over-strict critique | Recalibrate thresholds |
+| Low variance | Same output every run — rule would suffice | Replace with deterministic logic |
+
+**Plus static analysis** — a pre-commit gate blocks any call site where the response variable is assigned but never used downstream.
+
+The monitor also runs as a live HTTP dashboard (`monitor_server.py`) with sub-typed badges per failure class. See [`monitor/README.md`](./monitor/README.md) for the full architecture.
+
+This is the answer to "how do you govern AI in production?" — not a policy document, but a running system with time-stamped evidence.
+
+---
+
 ## Memory
 
 Claude's memory system persists facts, preferences, and project context across

@@ -1,329 +1,166 @@
-# Token Usage Monitor
+# Self-Governing AI Operations Monitor
 
-A lightweight self-improving observability layer for Claude Code skill pipelines. Every Claude API call made by a skill is logged, critiqued, and surfaced — so prompt failures get noticed, diagnosed, and fixed before they compound.
+An observable, auditable, self-correcting observability layer for Claude Code skill pipelines. Every Claude call is logged, classified by root cause, and surfaced — with a human approval gate before any change ships.
 
 ---
 
 ## What problem does this solve?
 
-Skills that call Claude internally (e.g. parsing a PDF, synthesising a KB entry, generating a financial brief) can silently fail. Claude might return malformed JSON, omit a required field, or produce output that doesn't match the schema the calling code expects. Without instrumentation:
+Skills that call Claude internally can silently fail. Without instrumentation:
 
 - Failures are invisible until something downstream breaks
 - You don't know *which* prompts are failing or *why*
 - Wasted tokens on retries go uncounted
-- Regressions introduced by prompt edits have no baseline to compare against
+- LLM calls used where a deterministic rule would suffice go undetected
+- Response variables discarded silently mean the call never needed to happen
 
-This system makes every Claude call observable, categorised, and actionable.
+This system makes every Claude call observable, classified by root cause, and actionable — with a self-improving loop that runs every Sunday.
 
 ---
 
-## Architecture overview
+## The self-governing loop
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        INSTRUMENTATION                          │
-│                                                                 │
-│  skill code                                                     │
-│    └── call_claude_with_critique(prompt, _critique_fn,          │
-│                                  skill="X", step="Y")           │
-│          │                                                      │
-│          ├── calls Claude CLI                                   │
-│          ├── runs critique function on response                 │
-│          └── writes to token_usage.jsonl  ◄─── monitor.py      │
-│                                                                 │
-│  PostToolUse hook (Claude Code)                                 │
-│    └── skill_monitor_hook.py                                    │
-│          └── writes estimated full_run entry for every skill    │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
+│  1. INSTRUMENT                                                  │
+│     call_claude_with_critique() → token_usage.jsonl             │
+│     Logs: skill · step · response_hash · critique severity      │
+│     SHA-256[:12] hash per response enables variance tracking    │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         STORAGE                                 │
+│  2. ANALYSE  (Sunday 21:00 — weekly cron via weekly_run.sh)     │
+│     critique_analysis.py classifies into 4 failure types:      │
 │                                                                 │
-│  logs/token_usage.jsonl   ← append-only JSONL log              │
-│  logs/health_history/     ← weekly snapshot archive            │
-│  pending_fixes/           ← actionable issues queue            │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                ┌─────────────┴─────────────┐
-                ▼                           ▼
-┌───────────────────────┐     ┌─────────────────────────────────┐
-│  ANALYSIS (scheduled) │     │  REPORTING (on demand)          │
-│                       │     │                                 │
-│  critique_analysis.py │     │  monitor_report.py              │
-│  (Sunday 21:00 AEST)  │     │  → /tmp/monitor_report.html     │
-│  → prompt_health.md   │     │                                 │
-│  → pending_fixes/     │     │  monitor_server.py              │
-│                       │     │  → localhost:8787 (live)        │
-│  critique_analysis    │     └─────────────────────────────────┘
-│  _daily.py            │
-│  (daily at session    │
-│   start if needed)    │
-│  → prompt_health      │
-│    _daily.md          │
-└───────────────────────┘
-                │
-                ▼
+│     hard_failure     hard_rate > 0% — sporadic failures         │
+│     wasted_json      retries exhausted, model returned text     │
+│     wasted_critique  retries exhausted, critique rejected valid │
+│     low_variance     uniqueness_ratio < 30% over ≥ 5 calls      │
+│                                                                 │
+│     unnecessary_scan.py finds unused response variables         │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    REMEDIAL FEEDBACK LOOP                       │
-│                                                                 │
-│  1. Session start reads prompt_health.md + prompt_health_       │
-│     daily.md and surfaces issues as flags                       │
-│                                                                 │
-│  2. User says "fix prompt issues"                               │
-│                                                                 │
-│  3. prompt-health-refactor skill reads pending_fixes/,          │
-│     traces failures to source code, proposes fixes with         │
-│     human approval (HITL), applies, runs tests, commits         │
-│                                                                 │
-│  4. Next pipeline run generates post-fix monitor entries        │
-│     → failure rate measured before and after                    │
+│  3. QUEUE                                                       │
+│     pending_fixes/ — one JSON per issue with issue_type field   │
+│     Session start surfaces count → "fix prompt issues"          │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  4. HITL REVIEW  ("fix prompt issues")                          │
+│     hard_failure    → fix prompt or critique                    │
+│     wasted_json     → add fallback rule to prompt               │
+│     wasted_critique → recalibrate critique thresholds           │
+│     No change ships without human: yes / skip / stop            │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  5. ENFORCE  (pre-commit hook — 5 gates)                        │
+│     Gate 1: no direct subprocess claude calls                   │
+│     Gate 2: parse_json_response() not json.loads()              │
+│     Gate 3: critique field checks — is None, not truthiness     │
+│     Gate 4: all steps registered in step_map.json               │
+│     Gate 5: response variable must be used after assignment     │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  6. RESET                                                       │
+│     Measurement baseline resets — new signal detected cleanly   │
+│     Accumulated fixes persist — no capability rollback          │
+│     Loop repeats next Sunday 21:00                              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Components
+## Failure taxonomy
 
-### `monitor.py` — Core logger
-
-The foundation. All other components depend on this.
-
-**Two modes of use:**
-
-**1. Programmatic** — called from `call_claude_with_critique()` inside skill code:
-```python
-from intelligence.utils import call_claude_with_critique
-
-raw, critique = call_claude_with_critique(
-    prompt,
-    _critique_fn,          # function that validates the response
-    skill="financial-os",  # skill name — shows up in the report
-    step="parse.statement" # step name — granular tracking within a skill
-)
-```
-Each call writes one JSONL entry with: timestamp, skill, step, prompt/response size, estimated tokens, latency, retries, critique result (`pass` / `soft` / `hard`), and the failure reason if any.
-
-**2. CLI** — called from a `SKILL.md` MONITOR_BLOCK at the end of a skill run:
-```bash
-python3 ~/.claude/monitor/monitor.py --log '{"skill":"portfolio-refresh","est_input_tokens":6000,...,"success":true}'
-```
-This writes an estimated `full_run` entry for skills that don't make individual Claude calls themselves.
-
-**Activation:** monitoring is gated on `CLAUDE_MONITOR_ENABLED=1`. Set this environment variable in `.bashrc` / `.zshrc` or in `launchd` plist entries for scheduled skills.
+| Dashboard badge | `issue_type` | Root cause | Right fix |
+|---|---|---|---|
+| Hard failure | `hard_failure` | Sporadic prompt/critique quality issue | Fix prompt or critique |
+| JSON failure | `wasted_json` | All retries exhausted, model returned plain text | Add JSON fallback rule to prompt |
+| Critique strict | `wasted_critique` | All retries exhausted, valid output rejected | Recalibrate critique thresholds |
+| Low variance | `low_variance` | Uniqueness ratio < 30% — rule would suffice | Replace with deterministic logic |
+| Unused response | static scan | Response variable assigned but never consumed | Remove call or wire downstream |
 
 ---
 
-### `skill_monitor_hook.py` — PostToolUse hook
-
-Fires automatically every time a skill is invoked via the `Skill` tool in Claude Code. Writes a fallback `full_run` entry so that skill invocations appear in the monitor even when the skill's own `MONITOR_BLOCK` didn't execute (e.g. conversation was interrupted, sub-skill chaining).
-
-**Deduplication:** if a `full_run` entry for the same skill was already written in the last 90 seconds, the hook skips writing — the authoritative `MONITOR_BLOCK` record takes precedence.
-
-**Token estimates** are looked up from `skill_estimates.json`. If a skill isn't in the file, the default (3,000 input / 600 output tokens) is used.
-
-Registered as a Claude Code `PostToolUse` hook in `settings.json`:
-```json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Skill",
-      "hooks": [{"type": "command", "command": "python3 ~/.claude/monitor/skill_monitor_hook.py"}]
-    }]
-  }
-}
-```
-
----
-
-### `skill_estimates.json` — Token estimate registry
-
-Maps skill names to estimated token usage for `full_run` entries. These are intentional approximations — precision is not the goal, coverage is.
-
-```json
-{
-  "_default": {"est_input_tokens": 3000, "est_output_tokens": 600},
-  "financial-os": {"est_input_tokens": 5000, "est_output_tokens": 1000},
-  "portfolio-refresh": {"est_input_tokens": 4000, "est_output_tokens": 800}
-}
-```
-
-Add a new entry whenever a new skill is built.
-
----
-
-### `critique_analysis.py` — Weekly health analysis
-
-Runs every Sunday at 21:00 AEST via `launchd`. Reads the past 7 days of `token_usage.jsonl`, computes per `skill/step` metrics, and writes `prompt_health.md` to memory.
-
-**What it produces:**
-- `memory/prompt_health.md` — the weekly health report (read by session start)
-- `pending_fixes/<date>-<skill>-<step>.json` — one file per actionable issue, queued for the HITL refactor workflow
-- `logs/health_history/<date>.md` — archive of the previous report before overwriting
-
-**Noise filtering:** entries whose `skill/step` key is marked `fix_type: "none"` in `step_map.json` are excluded from analysis. This prevents known test suite pollution or intentional no-ops from inflating the failure rate.
-
-**Trend tracking:** compares current hard rates against the previous week's snapshot to show `▲` / `▼` movement.
-
-Run manually anytime:
-```bash
-python3 ~/.claude/monitor/critique_analysis.py
-python3 ~/.claude/monitor/critique_analysis.py --days 14
-```
-
----
-
-### `critique_analysis_daily.py` — Daily fast check
-
-A lightweight complement to the weekly analysis. Runs at session start (or on demand) to catch issues in active daily pipelines before they accumulate for a full week.
-
-**Behaviour:**
-- Reads the last 24 hours of log entries
-- Skips anything below 10% hard failure rate (noise threshold)
-- If issues found: writes `memory/prompt_health_daily.md` and exits
-- If clean: deletes `prompt_health_daily.md` (no stale alerts) and exits
-- Runs once per day — uses a sentinel file (`logs/daily-last-run.txt`) to skip repeat runs
-
-Session start checks `prompt_health_daily.issues > 0` and surfaces the top issue as a flag.
-
----
-
-### `monitor_report.py` — On-demand HTML report
-
-Generates a self-contained HTML dashboard and opens it in the browser.
+## HTML dashboard
 
 ```bash
-# Basic usage
-python3 ~/.claude/monitor/monitor_report.py              # last 7 days (default)
-python3 ~/.claude/monitor/monitor_report.py --hours 6   # last 6 hours
-python3 ~/.claude/monitor/monitor_report.py --minutes 30
+# On-demand report (last 7 days)
+python3 ~/.claude/monitor/monitor_report.py
+
+# Live server — regenerates on every request
+python3 ~/.claude/monitor/monitor_server.py
+
+# Specific windows
 python3 ~/.claude/monitor/monitor_report.py --days 30
-python3 ~/.claude/monitor/monitor_report.py --all        # full history
-
-# Live auto-refresh
-python3 ~/.claude/monitor/monitor_report.py --live       # refresh every 30s
-python3 ~/.claude/monitor/monitor_report.py --live 10    # refresh every 10s
-
-# Combine flags
-python3 ~/.claude/monitor/monitor_report.py --hours 1 --live
-
-# Write without opening browser
-python3 ~/.claude/monitor/monitor_report.py --no-open
+python3 ~/.claude/monitor/monitor_report.py --hours 6
+python3 ~/.claude/monitor/monitor_report.py --all
 ```
 
-Output: `/tmp/monitor_report.html`
-
-**Report sections:**
-- **Summary cards** — total calls, estimated tokens, hard failures, soft flags, retries, overall hard rate
-- **Top issues** — skill/step pairs with hard rate > 0%, ranked by rate, with token waste estimate
-- **Full breakdown** — every skill/step pair: calls, hard%, soft%, retries, tokens, top failure reason, per-date cohort chips
-
-**Colour coding:** 🔴 ≥50% · 🟡 10–49% · 🟢 <10%
+Dashboard sections:
+- **Summary cards** — total calls · tokens · hard failures · soft flags · retries · low-variance steps · wasted (exhausted)
+- **Top issues** — steps ranked by hard_rate, with trend vs last week
+- **⚡ Unnecessary / wasted calls** — sub-typed: JSON failure · Critique strict · Low variance · Unused response
+- **Full breakdown** — all skill/step pairs with cohort chips
 
 ---
 
-### `monitor_server.py` — Live streaming server
-
-Starts a local HTTP server that regenerates the report fresh on every browser request. Best for active pipeline runs where you want a live view.
+## HITL fix workflow
 
 ```bash
-python3 ~/.claude/monitor/monitor_server.py              # port 8787, last 7 days
-python3 ~/.claude/monitor/monitor_server.py --hours 1    # last 1 hour
-python3 ~/.claude/monitor/monitor_server.py --port 9000
-python3 ~/.claude/monitor/monitor_server.py --refresh 60 # 60s page refresh
+# Trigger from Claude Code
+fix prompt issues
 ```
 
-Opens `http://localhost:8787` in the browser automatically. Unlike `monitor_report.py --live` (which re-reads a static file), the server re-queries the log on every browser request — so it always shows the latest entries, not just a re-read of the same HTML file.
+Reads `pending_fixes/`, traces each issue to source via `step_map.json`, presents a diff for approval. Runs tests and commits only if passing. Marks resolved in queue.
 
 ---
 
-## Log format
+## Pre-commit enforcement (5 gates)
 
-Every entry in `token_usage.jsonl` is one JSON object per line:
-
-```json
-{
-  "ts": "2026-06-03T07:29:27Z",
-  "skill": "financial-os",
-  "step": "parse.statement",
-  "prompt_chars": 8400,
-  "response_chars": 1200,
-  "est_input_tokens": 2100,
-  "est_output_tokens": 300,
-  "latency_ms": 4320,
-  "retries": 1,
-  "critique": "pass",
-  "critique_reason": "",
-  "estimated": false
-}
+```bash
+cd ~/.claude/skills/financial-os/scripts
+python3 -m pytest tests/test_no_rogue_claude_calls.py
+# Must show: 5 passed
 ```
 
-| Field | Values | Meaning |
-|---|---|---|
-| `skill` | string | Skill name — e.g. `financial-os` |
-| `step` | string | Step within skill — e.g. `parse.statement` |
-| `critique` | `pass` / `soft` / `hard` | **pass** = valid output · **soft** = minor warning, no retry · **hard** = invalid, retried |
-| `critique_reason` | string | Why it was flagged — e.g. `"invalid JSON"`, `"missing field: closing"` |
-| `retries` | int | Number of additional Claude calls triggered by hard failures |
-| `estimated` | bool | `true` = estimated via hook/CLI · `false` = measured from real call |
+| Gate | What it catches | Suppression |
+|------|----------------|-------------|
+| 1 | Direct `subprocess.run(["claude"...])` | exempt list |
+| 2 | `json.loads(raw)` on Claude output | — |
+| 3 | Bare `if not data.get(field)` in critique | `# noqa: critique-safe` |
+| 4 | Step not in `step_map.json` | `# noqa: step-map-exempt` |
+| 5 | Response variable never used after assignment | `# noqa: scan-exempt` |
 
 ---
 
-## The remedial feedback loop
+## Static scan
 
-This is the closed loop that turns monitoring data into improved prompts:
-
-```
-Monitor logs hard failures
-        │
-        ▼
-critique_analysis.py (Sunday) writes pending_fixes/
-        │
-        ▼
-Session start surfaces: "🔧 Prompt health: N issue(s) — say 'fix prompt issues'"
-        │
-        ▼
-User says "fix prompt issues"
-        │
-        ▼
-prompt-health-refactor skill:
-  1. Reads pending_fixes/ queue
-  2. Looks up skill/step in step_map.json → finds source file + symbols
-  3. Diagnoses failure reason (invalid JSON → wrong parser; missing field → schema mismatch)
-  4. Shows proposed fix with diff
-  5. HITL: "Apply this fix? (yes / skip / stop)"
-  6. Applies fix, runs test suite
-  7. If tests pass: commits + pushes
-  8. Marks pending fix as resolved
-        │
-        ▼
-Next pipeline run generates post-fix entries
-        │
-        ▼
-Failure rate measured: before% → after%
+```bash
+python3 ~/.claude/monitor/unnecessary_scan.py
+python3 ~/.claude/monitor/unnecessary_scan.py --skills-dir ~/.claude/skills/my-skill
+python3 ~/.claude/monitor/unnecessary_scan.py --log-days 30
 ```
 
-**Hard failure types and their fixes:**
-
-| Critique reason | Root cause | Fix |
-|---|---|---|
-| `"invalid JSON"` | Claude returned markdown-fenced JSON or prose — `json.loads()` can't parse it | Replace `json.loads(raw)` with `parse_json_response(raw)` which strips fences; strengthen prompt with "Output raw JSON only, no markdown" |
-| `"missing field: X"` | Prompt schema ambiguous or field name mismatch between prompt and critique | Clarify field name in prompt; check `is None` not `not value` for numeric/list fields in critique |
-| `"expected dict, got list"` | Claude returned a JSON array instead of object | Add `if isinstance(data, list): data = data[0]` after parse |
-| soft: `"period field missing"` | RTF/approximate balance files don't have a date range | Lower critique threshold to soft-only for this field |
+Unused response sites also appear in the HTML dashboard's unnecessary calls table.
 
 ---
 
-## Scheduling
+## Weekly cron
 
-Two scripts run on a schedule via macOS `launchd`:
+`~/Library/LaunchAgents/com.debashis.prompt-health-weekly.plist` — Sunday 21:00 AEST.
 
-| Script | Schedule | Purpose |
-|---|---|---|
-| `critique_analysis.py` | Sunday 21:00 AEST | Weekly health report + pending_fixes queue |
-| `critique_analysis_daily.py` | Daily at session start | Fast check for new failures in active pipelines |
-
-The weekly cron also runs the financial-os pipeline, so prompt failures in live data extraction are captured naturally.
+Runs `~/.claude/monitor/weekly_run.sh` which executes:
+1. `critique_analysis.py` → `prompt_health.md` + `pending_fixes/`
+2. `unnecessary_scan.py` → `logs/unnecessary_scan.log`
 
 ---
 
@@ -331,97 +168,80 @@ The weekly cron also runs the financial-os pipeline, so prompt failures in live 
 
 ```
 ~/.claude/monitor/
-├── monitor.py                    # Core logger — log_call(), read_log()
-├── monitor_report.py             # On-demand HTML report generator
-├── monitor_server.py             # Live HTTP server (regenerates on each request)
-├── critique_analysis.py          # Weekly analysis → prompt_health.md
-├── critique_analysis_daily.py    # Daily fast check → prompt_health_daily.md
-├── skill_monitor_hook.py         # PostToolUse hook — fallback full_run entries
-├── skill_estimates.json          # Per-skill token estimates for hook entries
-├── __init__.py                   # Package marker
+├── monitor.py                  # Core logger — log_call(), read_log()
+│                               # JSONL schema: ts · skill · step · prompt_chars
+│                               # response_chars · response_hash · critique
+│                               # critique_reason · latency_ms · retries · estimated
+├── monitor_report.py           # HTML report + live flag
+├── monitor_server.py           # Live HTTP server (localhost:8787)
+├── critique_analysis.py        # Weekly analysis — classifies all 4 failure types
+├── critique_analysis_daily.py  # Daily fast check
+├── unnecessary_scan.py         # Static analysis — unused response variables
+├── weekly_run.sh               # Cron wrapper: critique_analysis + unnecessary_scan
+├── skill_monitor_hook.py       # PostToolUse hook — full_run entries
+├── skill_estimates.json        # Per-skill token estimates
 └── logs/
-    ├── token_usage.jsonl         # Append-only log (runtime — not in git)
-    ├── daily-last-run.txt        # Sentinel for daily dedup (runtime)
-    ├── weekly-analysis.log       # launchd stdout (runtime)
-    ├── weekly-analysis-error.log # launchd stderr (runtime)
+    ├── token_usage.jsonl       # Append-only JSONL log (runtime)
+    ├── weekly-analysis.log
+    ├── unnecessary_scan.log
     └── health_history/
-        └── YYYY-MM-DD.md         # Archived weekly reports
+        └── YYYY-MM-DD.md       # Archived weekly reports
 
 ~/.claude/monitor/pending_fixes/
-└── YYYY-MM-DD-<skill>-<step>.json  # One file per queued issue; status: pending → resolved
+└── YYYY-MM-DD-<type>-<skill>-<step>.json
+    # issue_type: hard_failure | wasted_json | wasted_critique
+    # status: pending → resolved
 
 ~/.claude/skills/prompt-health-refactor/references/
-└── step_map.json                 # Maps skill/step → source file + symbols for HITL fixes
-```
-
----
-
-## Quick reference
-
-```bash
-# View live report (last 7 days)
-python3 ~/.claude/monitor/monitor_report.py
-
-# View with live auto-refresh (30s)
-python3 ~/.claude/monitor/monitor_report.py --live
-
-# Start live server (regenerates on every request)
-python3 ~/.claude/monitor/monitor_server.py
-
-# Re-run weekly analysis now
-python3 ~/.claude/monitor/critique_analysis.py
-
-# Check today's failures only
-python3 ~/.claude/monitor/critique_analysis_daily.py
-
-# Log a skill run manually (from SKILL.md MONITOR_BLOCK)
-python3 ~/.claude/monitor/monitor.py --log '{"skill":"my-skill","est_input_tokens":3000,"est_output_tokens":600,"success":true}'
+└── step_map.json  # Maps skill/step → source file + symbols + fix_type
 ```
 
 ---
 
 ## Adding monitoring to a new skill
 
-**For skills with internal Claude calls (Python):**
+**Python skills with Claude calls:**
+
 ```python
 from intelligence.utils import call_claude_with_critique, parse_json_response, CritiqueResult
 
 def _critique_output(raw: str) -> CritiqueResult:
     try:
-        data = parse_json_response(raw)   # always use this, never json.loads()
+        data = parse_json_response(raw)          # never json.loads()
     except (json.JSONDecodeError, ValueError):
         return CritiqueResult("hard", "invalid JSON")
-    if data.get("closing") is None:       # is None for numeric fields
+    if data.get("closing") is None:              # is None for numeric/list fields
         return CritiqueResult("hard", "missing field: closing")
-    if not data.get("platform"):          # not/bool for string fields
-        return CritiqueResult("soft", "platform field missing")
+    if not data.get("platform"):                 # noqa: critique-safe — string field
+        return CritiqueResult("soft", "platform missing")
     return CritiqueResult("pass", "")
 
 raw, critique = call_claude_with_critique(
-    prompt,
-    _critique_output,
-    skill="my-skill",    # must match an entry in step_map.json
-    step="my.step",
+    prompt, _critique_output, skill="my-skill", step="my.step"
 )
+result = parse_json_response(raw)    # Gate 5: raw must be used downstream
 ```
 
-Then add the step to `step_map.json`:
-```json
-"my-skill/my.step": {
-  "file": "~/.claude/skills/my-skill/scripts/my_script.py",
-  "symbols": ["PROMPT_TEMPLATE", "_critique_output"],
-  "fix_type": "prompt_and_critique"
-}
-```
+Register in `step_map.json`, then verify:
 
-**For skills without Python Claude calls (SKILL.md only):**
-
-Add a `MONITOR_BLOCK` at the end of the skill:
 ```bash
-python3 ~/.claude/monitor/monitor.py --log '{"skill":"my-skill","est_input_tokens":3000,"est_output_tokens":600,"steps_taken":5,"outputs_written":1,"success":true}'
+python3 ~/.claude/monitor/unnecessary_scan.py --skills-dir ~/.claude/skills/my-skill
+cd ~/.claude/skills/financial-os/scripts && python3 -m pytest tests/test_no_rogue_claude_calls.py
 ```
 
-Then add an entry to `skill_estimates.json`:
-```json
-"my-skill": {"est_input_tokens": 3000, "est_output_tokens": 600}
+**SKILL.md-only skills — add MONITOR_BLOCK:**
+
+```bash
+python3 ~/.claude/monitor/monitor.py --log '{"skill":"my-skill","est_input_tokens":3000,"est_output_tokens":600,"success":true}'
 ```
+
+---
+
+## Enterprise framing
+
+This system directly addresses:
+- **EU AI Act Articles 13 + 14** — every call logged, every change human-approved, before/after metrics on demand
+- **DORA operational resilience** — failures classified and resolved with documented evidence
+- **Audit trail** — the monitor dashboard *is* the governance artefact; no separate report needed
+
+*Built and running on personal infrastructure. Available as an enterprise pattern.*
