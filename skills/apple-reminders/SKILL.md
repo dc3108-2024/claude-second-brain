@@ -12,18 +12,6 @@ description: >
 
 Add reminders to the Mac/iPhone Reminders app from natural language. Syncs via iCloud instantly.
 
-## Requirements
-
-**Mac only.** Uses `osascript` to write directly to Reminders.app. No API keys or MCP
-server required — just Python stdlib and a running Reminders.app.
-
-## Setup
-
-1. Run `osascript -e 'tell application "Reminders" to get name of every list'`
-   to see your list names
-2. Edit the **Lists** section below to match your setup
-3. Update the `--list` default in `scripts/create_reminder.py` to your preferred default list
-
 ---
 
 ## Step 1 — Extract the fields
@@ -33,8 +21,9 @@ server required — just Python stdlib and a running Reminders.app.
 | **Title** | Required — ask if missing |
 | **Due date** | Optional — reminder with no date is valid |
 | **Due time** | Optional — if date given with no time, sets a date-only reminder |
-| **List** | Your default list name (see Setup) |
+| **List** | `To-do list 1` |
 | **Notes** | _(none)_ |
+| **Priority** | None (0) |
 
 Resolve relative dates against today's date from system context.
 
@@ -78,12 +67,4 @@ On failure, show the error and suggest the user check that Reminders.app is runn
 
 ## Lists
 
-Replace these with the output of the setup command above. Example structure:
-
-| List | Use for |
-|---|---|
-| `Reminders` | General tasks and errands (Apple's default list name) |
-| `Work` | Work tasks and follow-ups |
-| `Shopping` | Errands and purchases |
-
-Add as many lists as you use in Reminders.app — the skill routes to whichever you name.
+See `references/config.md` for the list names and their purposes.

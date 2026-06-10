@@ -10,19 +10,6 @@ description: >
 # Apple Calendar Skill
 
 Create Apple Calendar events from natural language — no form-filling, no app switching.
-Syncs to iPhone automatically via iCloud.
-
-## Requirements
-
-**Mac only.** Uses `osascript` to write directly to Calendar.app. No API keys or MCP
-server required — just Python stdlib and a running Calendar.app.
-
-## Setup
-
-1. Run `osascript -e 'tell application "Calendar" to get name of every calendar'`
-   to see your calendar names
-2. Edit the **Calendar names** section below to match your setup
-3. Update the `--calendar` default in `scripts/create_event.py` if needed
 
 ---
 
@@ -36,7 +23,7 @@ From the user's prompt, extract:
 | **Date** | Required — ask if ambiguous |
 | **Start time** | Required — ask if missing |
 | **Duration** | 60 minutes |
-| **Calendar** | Your default calendar name (see Setup) |
+| **Calendar** | `Calendar` |
 | **Notes** | _(none)_ |
 
 Resolve relative dates against today's date from the system context.
@@ -83,13 +70,4 @@ On failure, show the error and suggest the user check that Calendar.app is runni
 
 ## Calendar names
 
-Replace these with the output of the setup command above. Common patterns:
-
-| Calendar | Use for |
-|---|---|
-| `Calendar` | Personal / default (Apple's built-in name) |
-| `Work` | Work meetings, deadlines |
-| `Home` | Household, appointments |
-
-Tip: if the event context implies work (meeting, call, deadline, client), route to your
-work calendar. Otherwise use your personal default.
+See `references/config.md` for the calendar list and default rules.
