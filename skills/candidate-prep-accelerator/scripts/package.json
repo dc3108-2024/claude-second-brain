@@ -1,0 +1,8 @@
+{
+  "name": "candidate-prep-accelerator-scripts",
+  "private": true,
+  "dependencies": {
+    "docx": "^9.0.0",
+    "pptxgenjs": "^3.12.0"
+  }
+}
