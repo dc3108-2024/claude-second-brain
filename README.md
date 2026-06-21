@@ -489,9 +489,13 @@ points — adapt them to your domain and trigger phrases.
 
 ## Going further
 
-See [`EXTENDING.md`](./EXTENDING.md) for the path from scaffold to production — how
-each skill grows, when to split monolithic skills into composable micro-skills, which
-MCP integrations unlock the most, and what not to build.
+**New to the repo?** [`PLAYBOOK.md`](./PLAYBOOK.md) is the sequenced setup guide —
+four phases with milestones and "done when" gates, from individual scaffold to
+enterprise deployment. Start there if you want to be told what order to do things in.
+
+**Already building?** See [`EXTENDING.md`](./EXTENDING.md) for the path from scaffold
+to production — how each skill grows, when to split monolithic skills into composable
+micro-skills, which MCP integrations unlock the most, and what not to build.
 
 ---
 
