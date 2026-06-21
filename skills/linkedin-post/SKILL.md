@@ -148,7 +148,7 @@ After saving, output two blocks:
 
 The algorithm tests posts with 2–5% of the network in the first 60–90 minutes. Everything below maximises expansion from that seed:
 
-1. **Post within the B2B window** — Tue–Thu, 7:30–9:00 AM AEST (hits AU morning + EU evening simultaneously)
+1. **Post within the B2B window** — Tue–Thu, 7:30–9:00 AM your local morning (optimise for your audience's timezone)
 2. **Pin the first comment immediately** — paste it within seconds of publishing; it must sit at top before any other comments appear
 3. **Reply to every comment within 30 minutes** — ask a follow-up question in each reply to extend the thread; threads trigger aggressive reach expansion
 4. **Never edit the post body** — editing resets the distribution counter

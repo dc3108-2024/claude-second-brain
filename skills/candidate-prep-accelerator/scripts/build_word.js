@@ -131,7 +131,7 @@ children.push(
     spacing: { after: 80 },
   }),
   new Paragraph({
-    children: [new TextRun({ text: `Generated: ${new Date().toLocaleDateString("en-AU", { month: "long", year: "numeric" })}`, font: FONT, size: 20, color: "AAAAAA" })],
+    children: [new TextRun({ text: `Generated: ${new Date().toLocaleDateString(undefined, { month: "long", year: "numeric" })}`, font: FONT, size: 20, color: "AAAAAA" })],
     alignment: AlignmentType.CENTER,
   }),
   pageBreak()

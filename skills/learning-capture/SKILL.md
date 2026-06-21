@@ -7,7 +7,7 @@ description: >
   philosophy, personal finance, mental models, or general frameworks.
   Also triggers on: "capture this", "I just learned", "add to kb", "save this insight",
   "make this compound", or pasted content from a course, book, or session.
-  Also runs daily at 8 PM AEST to drain the Apple Notes "Learning dump" note.
+  Also runs daily at a scheduled time to drain the Apple Notes "Learning dump" note.
   When in doubt, capture — never skip a concept because no trigger phrase was used.
 ---
 
@@ -25,7 +25,7 @@ Read `~/.claude/persona.json`. Use these values throughout — never hardcode th
 **DRAIN MODE** — invoke when triggered by:
 - "drain my learning dump"
 - "process learning dump"
-- Scheduled daily run (8 PM AEST)
+- Scheduled daily run (configure time in your crontab/launchd)
 
 **INLINE MODE** — invoke for everything else:
 - A concept shared in conversation

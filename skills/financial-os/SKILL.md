@@ -30,7 +30,7 @@ Say any of these phrases to Claude Code:
 | Hide figures for screen sharing | `"run in demo mode"` | `run.py --no-ingest --all-scenarios --demo` |
 | Force re-parse all statements | `"force full ingest"` | `run.py --all-scenarios --force` |
 
-**Also triggers automatically:** when any file is dropped into `~/Finance/Investments_cash_balances_latest/` — launchd fires `run.py --all-scenarios` and sends a macOS notification.
+**Also triggers automatically:** when any file is dropped into your configured statements folder (set in `references/financial-config.md`) — launchd fires `run.py --all-scenarios` and sends a macOS notification.
 
 **Skip this skill** when the user only wants the Excel workbook rebuilt — use `portfolio-refresh` instead.
 
@@ -75,7 +75,7 @@ SCRIPTS=~/.claude/skills/financial-os/scripts
 
 ## Lifestyle Inputs
 
-All retirement assumptions live in `~/FinancialOS/data/lifestyle.json`. Edit the file or ask Claude to update it.
+All retirement assumptions live in `~/[YourProjectFolder]/data/lifestyle.json`. Edit the file or ask Claude to update it.
 
 **To change the active scenario:** edit `"active_scenario"` in lifestyle.json, then run `--no-ingest`.
 
@@ -106,13 +106,13 @@ See `references/financial-config.md` for the full scenario table and active scen
 
 ## Data
 
-Runtime data stays in `~/FinancialOS/data/` — not in the skill folder.
+Runtime data stays in `~/[YourProjectFolder]/data/` — not in the skill folder.
 
 | File | Contents |
 |---|---|
-| `~/FinancialOS/data/portfolio.json` | Normalised holdings, per-account values, corpus summary |
-| `~/FinancialOS/data/profile.json` | Personal config: ages, income, retirement targets |
-| `~/Finance/Investments_cash_balances_latest/` | Source statements (canonical input folder) |
+| `~/[YourProjectFolder]/data/portfolio.json` | Normalised holdings, per-account values, corpus summary |
+| `~/[YourProjectFolder]/data/profile.json` | Personal config: ages, income, retirement targets |
+| `~/[StatementsFolder]/` | Source statements (canonical input folder — set in financial-config.md) |
 
 ## Statement Sources
 
@@ -124,7 +124,7 @@ To add a new statement: drop any PDF/XLSX/CSV into the source folder and run `py
 
 See `references/financial-config.md` for the full assumptions table.
 
-To change assumptions: edit the relevant scenario fields in `~/FinancialOS/data/lifestyle.json`, then run `--no-ingest`. Update `references/financial-config.md` snapshot after any material change.
+To change assumptions: edit the relevant scenario fields in `~/[YourProjectFolder]/data/lifestyle.json`, then run `--no-ingest`. Update `references/financial-config.md` snapshot after any material change.
 
 ## Last Known Output
 
@@ -135,9 +135,9 @@ See `references/financial-config.md` for the most recent corpus snapshot. Update
 1. `ingestion/statement_manifest.py` fingerprints each file — skips unchanged, processes new/modified only
 2. Transaction CSVs are routed to `intelligence/parse_transactions.py` → `cost_basis_map` (in-memory)
 3. Balance files: `ingestion/extract.py` → plain text; `ingestion/parse.py` (via `claude -p`) → rich schema JSON (platform, owner, account_id, period, currency, summary.closing, holdings[])
-4. `ingestion/ingest.py` deduplicates and delta-merges into `~/FinancialOS/portfolio_data.json`
-5. `run.py._auto_transform()` persists cost basis to `cost_basis_map.json`, then runs `intelligence/transform.py` → `~/FinancialOS/data/portfolio.json` (enriched schema with FX conversion and per-holding cost basis)
-6. `calculations/retirement.py` reads `data/portfolio.json` summary total → runs FIRE math (Python port of Retirogen's `retirementCalculations.ts`)
+4. `ingestion/ingest.py` deduplicates and delta-merges into `~/[YourProjectFolder]/portfolio_data.json`
+5. `run.py._auto_transform()` persists cost basis to `cost_basis_map.json`, then runs `intelligence/transform.py` → `~/[YourProjectFolder]/data/portfolio.json` (enriched schema with FX conversion and per-holding cost basis)
+6. `calculations/retirement.py` reads `data/portfolio.json` summary total → runs FIRE math
 7. `intelligence/pointers.py` reads `data/portfolio.json` + KB entries → 3–5 actionable portfolio pointers
 
 ## When to Run Ingest vs No-Ingest

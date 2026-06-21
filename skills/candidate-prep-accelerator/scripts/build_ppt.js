@@ -245,7 +245,7 @@ title.addText("Professional Services Practice", {
   x: 0.7, y: 3.0, w: 8.8, h: 0.5, fontSize: 13,
   color: C.white, fontFace: "Calibri", opacity: 0.8,
 });
-title.addText(`Candidate Prep Accelerator  |  ${new Date().toLocaleDateString("en-AU", { month: "long", year: "numeric" })}`, {
+title.addText(`Candidate Prep Accelerator  |  ${new Date().toLocaleDateString(undefined, { month: "long", year: "numeric" })}`, {
   x: 0.7, y: 3.5, w: 8.8, h: 0.4, fontSize: 10,
   color: C.white, fontFace: "Calibri", opacity: 0.55,
 });
