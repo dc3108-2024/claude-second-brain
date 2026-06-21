@@ -148,6 +148,15 @@ claude-second-brain/
 │                               # change. Wire it up with the hook and your config
 │                               # is version-controlled automatically.
 │
+├── lib/
+│   ├── claude_utils.py         # LLM harness: call_claude_with_critique(),
+│   │                           # parse_json_response(), auto_select_tier().
+│   │                           # Import this in any skill that calls Claude.
+│   ├── memory.py               # Memory CRUD: read_memory(), save_memory(),
+│   │                           # list_memories(), search_memories().
+│   └── models.json             # Tier-to-model mapping. Swap models here without
+│                               # touching any skill code.
+│
 ├── skills/
 │   ├── generate-readme.py      # Scans all SKILL.md files, auto-classifies skills
 │   │                           # by keyword, and regenerates README.md. Runs via
@@ -159,7 +168,17 @@ claude-second-brain/
 │   │                           # .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 │   │
 │   ├── _template/
-│   │   └── SKILL.md            # Starter template for any new skill.
+│   │   ├── SKILL.md            # Starter template for any new skill.
+│   │   └── scripts/
+│   │       └── example_skill.py  # Complete runnable skill using all lib/ patterns.
+│   │
+│   ├── pm-workflow/            # Runnable Python scripts for PM workflows
+│   │   ├── SKILL.md            # Pipeline: sound bytes → PRD → user stories
+│   │   ├── scripts/
+│   │   │   ├── prd_drafter.py      # Problem description → structured PRD (JSON)
+│   │   │   └── story_generator.py  # PRD → user stories + acceptance criteria (JSON)
+│   │   └── references/
+│   │       └── prd_template.md     # PRD field definitions injected into the prompt
 │   │
 │   ├── research-brief/         # Web research → synthesised briefing
 │   │   └── SKILL.md
@@ -280,6 +299,18 @@ skill-name/
 ```
 
 **`SKILL.md` only describes the workflow.** Code goes in `scripts/`, data goes in `references/`.
+
+Skills with Python scripts are runnable standalone or chained together:
+
+```bash
+# Full PM pipeline — problem description → user stories in one command
+python3 skills/pm-workflow/scripts/prd_drafter.py \
+    "Analysts export data to Excel manually every morning." | \
+    python3 skills/pm-workflow/scripts/story_generator.py
+```
+
+See `skills/_template/scripts/example_skill.py` for the canonical starting point,
+and `skills/pm-workflow/scripts/` for a production example using `lib/claude_utils.py`.
 
 ### Blueprint vs Data — the most important pattern
 

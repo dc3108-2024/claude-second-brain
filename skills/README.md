@@ -1,6 +1,6 @@
 # Skills Library
 
-> 24 skills across 9 categories.
+> 25 skills across 9 categories.
 
 ### Intelligence & Research
 
@@ -40,6 +40,7 @@
 |-------|--------------|
 | [`audio-interview-bridge`](./audio-interview-bridge/SKILL.md) | End-to-end pipeline: voice memo → Whisper transcription → Claude distillation → AI-powered project routing → Slack HITL approval → Confluence PRD + JIRA epic + stories. |
 | [`jira-pm`](./jira-pm/SKILL.md) | AI PM lifecycle orchestrator — wraps the build pipeline with JIRA epics, Confluence PRDs, user stories, and Slack status updates. Three modes: OPEN, BUILD, and CLOSE. |
+| [`pm-workflow`](./pm-workflow/SKILL.md) | Runnable Python scripts: prd_drafter.py (problem description → structured PRD) and story_generator.py (PRD → user stories with acceptance criteria). Composable via stdin/stdout pipe. |
 | [`idea-backlog`](./idea-backlog/SKILL.md) | Centralised backlog manager for feature development, pipeline enhancements, bug fixes, and ideas. Multi-source intake, smart prioritisation, and Kanban view on demand. |
 
 ### Learning OS

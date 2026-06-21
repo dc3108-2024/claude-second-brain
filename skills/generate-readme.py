@@ -54,6 +54,11 @@ CATEGORIES = [
         ["apple-calendar", "apple-reminders"],
     ),
     (
+        "PM & Delivery",
+        "AI-assisted product management — PRDs, user stories, and delivery workflows",
+        ["pm-workflow", "candidate-prep-accelerator"],
+    ),
+    (
         "System & Infrastructure",
         "Skills for building skills, managing memory, and maintaining your setup",
         [],   # add your system skills here

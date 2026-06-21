@@ -10,6 +10,20 @@ description: >
 
 One-line purpose statement. What problem does this solve?
 
+<!-- SCRIPTS NOTE (delete this block if your skill has no code)
+If this skill calls Claude programmatically or produces structured output,
+put the code in scripts/ and call it from the step below.
+
+Runnable example:
+  python3 skills/your-skill-name/scripts/your_script.py "input"
+
+Start from: skills/_template/scripts/example_skill.py
+Import from: lib/claude_utils.py (LLM harness) and lib/memory.py (memory CRUD)
+
+Production reference: skills/pm-workflow/scripts/ — two composable scripts
+that chain via stdin/stdout (prd_drafter.py | story_generator.py).
+-->
+
 ---
 
 ## Step 1 — [First action]

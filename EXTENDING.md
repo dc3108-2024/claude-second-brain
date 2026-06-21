@@ -22,6 +22,55 @@ in the intermediate tier and that's the right call.
 
 ---
 
+## PM Workflow
+
+**Scaffold gives you:** `pm-workflow` — two runnable Python scripts that take a problem
+description all the way to JIRA-ready user stories.
+
+```bash
+# 30 seconds from raw complaint to user stories with acceptance criteria
+python3 skills/pm-workflow/scripts/prd_drafter.py \
+    "Analysts export portfolio data to Excel manually every morning" | \
+    python3 skills/pm-workflow/scripts/story_generator.py
+```
+
+**What grows naturally:**
+
+| Addition | How it works |
+|---|---|
+| JIRA pusher | A third script reads story JSON from stdin and calls the JIRA API. Chain it after `story_generator.py`. |
+| Confluence page | Claude creates a Confluence page from the PRD JSON (MCP tool: `confluence_create_page`). |
+| Sprint recap generator | Given a list of completed stories, produces a structured retrospective. Same pattern as the PRD drafter. |
+| Acceptance criteria validator | Reads existing stories and flags ACs that aren't self-contained or measurable. |
+
+**The pattern to copy from `pm-workflow/scripts/`:**
+
+Each script is a pure function — JSON in, JSON out. Scripts are composable because they
+don't write to disk or call external services. This means you can stop at any step, inspect
+the output, hand-edit it, and resume.
+
+```python
+# Every script in pm-workflow/ follows this structure:
+from lib.claude_utils import call_claude_with_critique, parse_json_response, CritiqueResult
+
+def _critique(raw: str) -> CritiqueResult:
+    # Validate the output schema before returning it
+    data = parse_json_response(raw)
+    if not data.get("feature_name"):
+        return CritiqueResult("hard", "feature_name missing")
+    return CritiqueResult("pass", "")
+
+def main_function(input: str) -> dict:
+    raw, _ = call_claude_with_critique(prompt, _critique, skill="pm-workflow", step="prd.draft")
+    return parse_json_response(raw)
+```
+
+The critique function is what makes these scripts production-grade: hard failures retry
+automatically with the failure reason prepended, so you get valid structured output
+even when Claude decides to add prose around the JSON.
+
+---
+
 ## Learning OS
 
 **Scaffold gives you:** One skill covering capture → synthesise → connect → recall.
@@ -569,6 +618,11 @@ The discipline of separating workflow from code from data pays off when skills g
 complex. A skill that has 200 lines of Python embedded in `SKILL.md` is hard to
 debug and impossible to test. Move the code to `scripts/`, call it from the workflow,
 and both become maintainable.
+
+**Starting points:**
+- `skills/_template/scripts/example_skill.py` — minimal skill using `lib/claude_utils.py`
+- `skills/pm-workflow/scripts/` — production example: two scripts that compose via pipes,
+  each with a typed critique function, safe JSON parsing, and automatic model selection
 
 **When to split a skill:**
 

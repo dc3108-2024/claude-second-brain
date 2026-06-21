@@ -96,4 +96,8 @@ Tier-to-model mapping. Edit here to upgrade or swap models without touching any 
 
 ## See also
 
-`skills/_template/scripts/example_skill.py` — complete end-to-end skill using all three modules.
+`skills/_template/scripts/example_skill.py` — minimal end-to-end skill using all three modules (good starting point).
+
+`skills/pm-workflow/scripts/` — production example: two composable scripts (`prd_drafter.py`,
+`story_generator.py`) that chain together via stdin/stdout. Shows critique functions for structured
+JSON output, model-tier selection, and clean piping between Claude calls.
