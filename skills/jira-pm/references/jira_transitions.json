@@ -1,0 +1,16 @@
+{
+  "_note": "Cache of JIRA transition IDs per project. Populated automatically on first use. Set to null to force discovery on next run.",
+  "_how_to_populate": "Run jira_get_transitions for any issue in the project. Look for 'In Progress' and 'Done' in the returned list. Copy their IDs here.",
+  "YOUR_PROJECT_1": {
+    "In Progress": null,
+    "Done": null
+  },
+  "YOUR_PROJECT_2": {
+    "In Progress": null,
+    "Done": null
+  },
+  "YOUR_PROJECT_3": {
+    "In Progress": null,
+    "Done": null
+  }
+}

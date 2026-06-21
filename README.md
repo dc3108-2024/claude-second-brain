@@ -6,6 +6,69 @@ from scratch every session.
 
 ---
 
+## System Architecture
+
+The skills here are not standalone scripts. They run on shared orchestration infrastructure — common Claude instrumentation, prompt health monitoring, self-correcting feedback loops, a memory system, and a Slack interface.
+
+The first skill costs weeks to build. The tenth costs a weekend. That is the compounding effect of building the factory before building the products.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Personal AI OS                               │
+│            Agentic infrastructure that compounds                     │
+└─────────────────────────────────────────────────────────────────────┘
+                               │
+          ┌────────────────────┼────────────────────┐
+          │                    │                    │
+   [Domain Modules]    [Shared Harness]     [Feedback Loops]
+          │                    │                    │
+  ┌───────┴──────┐   ┌─────────┴──────┐   ┌────────┴──────────┐
+  │ Learning OS  │   │ call_claude_   │   │ token_usage.jsonl │
+  │ PM Loop      │   │ with_critique()│   │ critique_analysis │
+  │ Financial OS │   │ parse_json_    │   │ prompt_health.md  │
+  │ Other domains│   │ response()     │   │ HITL refactor     │
+  └──────────────┘   │ Memory system  │   └───────────────────┘
+                     │ Slack interface│
+                     │ Prompt monitor │
+                     │ Self-correction│
+                     └────────────────┘
+```
+
+### How a skill is structured
+
+```
+skills/<name>/
+├── SKILL.md          ← Claude reads this — trigger phrases, workflow, rules
+├── scripts/          ← Python automation
+│   └── *.py
+└── references/       ← Config, templates, data
+    └── *.json / *.md
+```
+
+### Self-improving loop
+
+```
+Claude call
+    │
+    ▼
+call_claude_with_critique()   ← retries automatically on hard failure
+    │
+    ▼
+token_usage.jsonl   ← every call logged (skill, step, tokens, critique result)
+    │
+    ▼
+critique_analysis.py  ← weekly: surfaces hard failure patterns
+    │
+    ▼
+prompt_health.md  ← shown at session start if issues exist
+    │
+    ▼
+prompt-health-refactor skill  ← HITL: propose fix → you approve → apply → test
+    │
+    ▼
+Lower failure rate on next run  ← system improves itself
+```
+
 <!-- ARCH-DIAGRAM-START -->
 ## Architecture
 
@@ -60,11 +123,51 @@ claude-second-brain/
 │   ├── _template/
 │   │   └── SKILL.md            # Starter template for any new skill.
 │   │
-│   ├── research-brief/         # Example: web research → synthesised briefing
+│   ├── research-brief/         # Web research → synthesised briefing
 │   │   └── SKILL.md
 │   │
-│   └── process-diagram/        # Example: any process description → draw.io diagram
-│       └── SKILL.md
+│   ├── process-diagram/        # Any process description → draw.io diagram
+│   │   └── SKILL.md
+│   │
+│   ├── audio-interview-bridge/ # Voice memo → Whisper → distil → JIRA/Confluence
+│   │   ├── SKILL.md
+│   │   ├── scripts/            # audio_bridge.py, distil.py, router.py
+│   │   └── references/         # routing_config.json (project routing table)
+│   │
+│   ├── jira-pm/                # PM lifecycle: OPEN / BUILD / CLOSE / BRIDGE
+│   │   ├── SKILL.md
+│   │   ├── scripts/            # prd_drafter.py, story_generator.py, infra_classifier.py
+│   │   └── references/         # confluence_spaces.md, jira_transitions.json
+│   │
+│   ├── humanize-ai-writing/    # Strip AI patterns, add real voice
+│   │   ├── SKILL.md
+│   │   └── references/         # banned-list.md (comprehensive pattern list)
+│   │
+│   ├── document-8020/          # Long doc → 80/20 reference PDF
+│   │   ├── SKILL.md
+│   │   └── scripts/            # build_8020_pdf.py, extract_pdf_to_md.py
+│   │
+│   ├── memory-extractor/       # Session transcript → implicit memory files
+│   │   ├── SKILL.md
+│   │   └── scripts/            # extract.py
+│   │
+│   ├── skill-creator/          # Create, test, eval, and optimize skills
+│   │   ├── SKILL.md
+│   │   ├── scripts/            # run_eval.py, run_loop.py, aggregate_benchmark.py
+│   │   ├── agents/             # grader.md, comparator.md, analyzer.md
+│   │   └── references/         # bdd_spec_template.md, schemas.md
+│   │
+│   ├── prompt-health-refactor/ # HITL: fix failing prompts from monitor reports
+│   │   ├── SKILL.md
+│   │   └── references/         # step_map.json (skill/step → source file registry)
+│   │
+│   ├── self-correction/        # Auto-diagnose and recover from skill failures
+│   │   └── SKILL.md
+│   │
+│   └── idea-backlog/           # Centralised backlog: ADD/DUMP/NEXT/KANBAN/TRIAGE
+│       ├── SKILL.md
+│       ├── scripts/            # recommend.py, kanban_server.py, autonomous_picker.py
+│       └── references/         # config.md, usage_log.jsonl
 │
 └── memory/
     ├── README.md               # How the memory system works

@@ -1,0 +1,34 @@
+{
+  "_comment": "Smart routing uses Claude to classify sound bytes against project descriptions. Prefix routes and default_route are fallbacks only.",
+  "smart_routes": [
+    {
+      "jira_project": "YOUR_PROJECT_1",
+      "confluence_space": "your-space-1",
+      "slack_channel": "#your-channel",
+      "description": "Project 1 — describe what kinds of interviews belong here (e.g. product features, AI workflows, internal tooling)"
+    },
+    {
+      "jira_project": "YOUR_PROJECT_2",
+      "confluence_space": "your-space-2",
+      "slack_channel": "#your-channel",
+      "description": "Project 2 — describe what kinds of interviews belong here (e.g. data, analytics, reporting features)"
+    },
+    {
+      "jira_project": "YOUR_PROJECT_3",
+      "confluence_space": "your-space-3",
+      "slack_channel": "#your-channel",
+      "description": "Project 3 — describe what kinds of interviews belong here (e.g. operations, logistics, planning)"
+    }
+  ],
+  "default_route": {
+    "jira_project": "YOUR_PROJECT_1",
+    "confluence_space": "your-space-1",
+    "slack_channel": "#your-channel",
+    "description": "Default fallback — use when no project is a clear fit"
+  },
+  "voice_memos_path": "~/VoiceMemos/",
+  "_voice_memos_icloud_path_note": "To use the native iCloud sync path instead, grant Full Disk Access to Terminal in System Settings > Privacy & Security > Full Disk Access, then change to: ~/Library/Group Containers/group.com.apple.VoiceMemos.shared/Recordings/",
+  "poll_interval_seconds": 30,
+  "whisper_model": "small",
+  "whisper_language": "en"
+}

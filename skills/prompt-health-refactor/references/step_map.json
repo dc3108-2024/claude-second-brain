@@ -1,0 +1,16 @@
+{
+  "_note": "Maps (skill, step) monitor keys to the source file and symbol containing the prompt/critique. Add entries as new steps are instrumented.",
+  "_format": "{ \"skill/step\": { \"file\": \"path\", \"symbols\": [\"fn_name\"], \"fix_type\": \"prompt|critique|prompt_and_critique\" } }",
+  "_example": {
+    "my-skill/extract.data": {
+      "file": "~/.claude/skills/my-skill/scripts/extract.py",
+      "symbols": ["build_prompt", "_critique_response", "PROMPT_TEMPLATE"],
+      "fix_type": "prompt_and_critique"
+    }
+  },
+  "_fix_types": {
+    "prompt": "Only the prompt needs fixing — critique is fine",
+    "critique": "Only the critique thresholds need recalibrating — prompt is fine",
+    "prompt_and_critique": "Both may need changes — diagnose from top_reason"
+  }
+}
