@@ -88,10 +88,10 @@ Maps platform name → account type. Controls how `transform.py` categorises eac
 
 ```json
 {
-  "Vanguard": "investments",
-  "Fidelity 401k": "super",
-  "Chase Savings": "savings",
-  "Coinbase": "crypto"
+  "[Broker Name]": "investments",
+  "[Super Fund]": "super",
+  "[Savings Bank]": "savings",
+  "[Crypto Exchange]": "crypto"
 }
 ```
 
@@ -132,9 +132,9 @@ Both skill paths write to `portfolio_data.json` using this schema (from `portfol
 
 ```json
 {
-  "platform":   "Vanguard",
+  "platform":   "[Platform Name]",
   "owner":      "joint",
-  "account_id": "****4974",
+  "account_id": "****0000",
   "period":     "01 Jan 2024 – 30 Apr 2026",
   "currency":   "AUD",
   "notes":      "",
@@ -147,8 +147,8 @@ Both skill paths write to `portfolio_data.json` using this schema (from `portfol
   },
   "holdings": [
     {
-      "name":        "Vanguard Australian Shares Index",
-      "asset_class": "Australian Shares",
+      "name":        "[Fund Name]",
+      "asset_class": "[Asset Class]",
       "units":       1234.57,
       "unit_price":  2.35,
       "value":       2901.24,

@@ -258,7 +258,7 @@ Both scripts auto-generate filenames from `meta.company` (first 2 words) and `me
 
 | Input | Output |
 |-------|--------|
-| company: "ING Wholesale Banking", role: "IT Integrator / Tech PM" | `ING_Wholesale_IT_Integrator_Tech_Primer.docx` |
+| company: "Acme Bank", role: "IT Integrator / Tech PM" | `Acme_Bank_IT_Integrator_Tech_Primer.docx` |
 | company: "Barclays Corporate Bank", role: "Business Analyst" | `Barclays_Corporate_Business_Analyst_Tech_Primer.docx` |
 
 Override with `--output ~/Desktop/custom_name.docx`.

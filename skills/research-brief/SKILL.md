@@ -18,7 +18,7 @@ Automated research: run targeted web searches, synthesise findings into a struct
 ## Persona
 Read `~/.claude/persona.json`. Use these values throughout — never hardcode them:
 - `professional.domain` — domain expertise, e.g. ["Banking", "Life Insurance", "FinServ", "Agentic AI"]
-- `professional.employer` — employer, e.g. "TCS"
+- `professional.employer` — employer, e.g. "[Your Employer]"
 - `retirement.target_year` — FIRE target year, e.g. 2036
 - `relocation.to_name` — destination country for regulatory context
 
@@ -64,7 +64,7 @@ What is the single most important thing to know? One sentence.
 3-5 bullet points. Facts, numbers, named actors, real examples. No vague generalities.
 
 **What This Means for Banking/Insurance/Fintech**
-Specific implications for his domain. If this is a tech topic, what's the adoption curve in financial services? If regulatory, what's the compliance implication? If market, what's the competitive dynamic?
+Specific implications for the user's domain. If this is a tech topic, what's the adoption curve in financial services? If regulatory, what's the compliance implication? If market, what's the competitive dynamic?
 
 **The Consulting / BD Angle**
 If you were in a client conversation tomorrow, what insight or framework could you use from this? What problem does this help solve for your target domain?

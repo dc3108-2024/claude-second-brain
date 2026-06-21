@@ -1,7 +1,7 @@
 ---
 name: linkedin-post
 description: >
-  Use when writing a LinkedIn post — from a topic in his head,
+  Use when writing a LinkedIn post — from a topic in the user's head,
   an Apple Note title, a research brief, a document, or an idea from the daily
   intel brief. Triggers on: "write a LinkedIn post about X", "turn this into a
   LinkedIn post", "post from my note [title]", "post from today's brief",
@@ -11,7 +11,7 @@ description: >
 # LinkedIn Post Skill
 
 LinkedIn post generator. Framework-first, domain-specific, saved as a
-numbered PDF to his posts folder. Never generic. Always his voice.
+numbered PDF to the user's posts folder. Never generic. Always the user's voice.
 
 PDF scaffold: `scripts/build_post_pdf.py`
 Dependencies: `reportlab`, `apple-notes MCP` (for note input mode)
@@ -61,7 +61,7 @@ If the source has multiple angles, pick the sharpest one. Apply at least one of 
 
 ---
 
-## Step 3 — Write in his voice
+## Step 3 — Write in the user's voice
 
 **Non-negotiable voice rules:**
 

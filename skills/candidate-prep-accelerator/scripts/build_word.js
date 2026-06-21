@@ -318,7 +318,7 @@ const doc = new Document({
         children: [new Paragraph({
           children: [
             new TextRun({ text: `${company} — ${role} | `, font: FONT, size: 18, color: "888888" }),
-            new TextRun({ text: "TCS BFS Practice", font: FONT, size: 18, color: "888888", bold: true }),
+            new TextRun({ text: "[Your Organisation]", font: FONT, size: 18, color: "888888", bold: true }),
           ],
           border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: brandHex, space: 1 } },
         })],

@@ -156,7 +156,7 @@ Unused response sites also appear in the HTML dashboard's unnecessary calls tabl
 
 ## Weekly cron
 
-`~/Library/LaunchAgents/com.debashis.prompt-health-weekly.plist` — Sunday 21:00 AEST.
+`~/Library/LaunchAgents/com.yourname.prompt-health-weekly.plist` — Sunday 21:00 local time.
 
 Runs `~/.claude/monitor/weekly_run.sh` which executes:
 1. `critique_analysis.py` → `prompt_health.md` + `pending_fixes/`
