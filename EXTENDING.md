@@ -131,6 +131,10 @@ PM's actual decision.
 - Config: `skills/audio-interview-bridge/references/routing_config.json` — define your JIRA projects and their descriptions; the router uses these to classify
 - The daemon runs as a background process (launchd on Mac, systemd on Linux), polling a watch folder every 30 seconds
 
+**See it in practice:**
+
+The full PRD for the audio-interview-bridge feature — written before the code, validated against a live stakeholder recording — is in [docs/case-studies/audio-interview-bridge.md](./docs/case-studies/audio-interview-bridge.md). This is what the output of jira-pm's OPEN flow looks like in production.
+
 ---
 
 ## Document Production

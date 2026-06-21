@@ -1,16 +1,53 @@
-# Claude Code — Personal Second Brain
+# Claude Code — Personal AI OS Scaffold
 
-A reference architecture for turning Claude Code from a chat interface into
-personal infrastructure. Fork it, adapt it to your context, and stop starting
-from scratch every session.
+Most people use AI reactively — ask a question, get an answer, move on.
+
+This is the infrastructure for the other approach: building a system where the AI
+work you do today compounds into better, faster output next month.
 
 ---
 
-## System Architecture
+## What this has produced
 
-The skills here are not standalone scripts. They run on shared orchestration infrastructure — common Claude instrumentation, prompt health monitoring, self-correcting feedback loops, a memory system, and a Slack interface.
+Not demos. Not examples. Real features, built end to end, with the skills in this repo:
 
-The first skill costs weeks to build. The tenth costs a weekend. That is the compounding effect of building the factory before building the products.
+### Voice recording → structured JIRA backlog in under 5 minutes
+
+A stakeholder requirements interview lands in a watch folder. A background daemon
+picks it up, transcribes it locally via Whisper, and passes it to Claude — which
+strips interviewer questions and filler, preserves the stakeholder's exact framing,
+and flags ambiguous requirements. A Slack message appears with the distilled
+requirements and routing confidence. One reply. Confluence PRD, JIRA epic, and
+dependency-mapped user stories created automatically.
+
+[Read the PRD →](./docs/case-studies/audio-interview-bridge.md)
+
+### Multi-project routing without manual tagging
+
+A Claude classifier reads the distilled content of any voice recording and routes
+it to the correct JIRA project — not by filename convention, but by understanding
+what the content is about. Confidence and rationale surface in Slack so the PM
+can verify before approving. New projects are added via config, not code.
+
+[Read the PRD →](./docs/case-studies/smart-content-routing.md)
+
+### A PM lifecycle in three commands
+
+`new feature: X` → PRD drafted, Confluence page created, JIRA epic opened,
+stories generated with acceptance criteria and dependency links, Slack notification
+sent. `build KEY-N` → story moved to In Progress, writing plan generated.
+`close KEY-N, PR: <url>` → story Done, PR linked, Confluence updated, Slack notified.
+
+The PM owns the full cycle — from raw idea to developer-ready backlog — without
+handing off at any step.
+
+---
+
+## The factory model
+
+The first skill takes weeks. The most recent took a weekend.
+
+Same complexity. Different infrastructure maturity.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -29,45 +66,22 @@ The first skill costs weeks to build. The tenth costs a weekend. That is the com
   │ Other domains│   │ response()     │   │ HITL refactor     │
   └──────────────┘   │ Memory system  │   └───────────────────┘
                      │ Slack interface│
-                     │ Prompt monitor │
                      │ Self-correction│
                      └────────────────┘
 ```
 
-### How a skill is structured
+A step that was failing 89% of the time was fixed once and never failed again.
+The monitor caught it. The feedback loop surfaced it. The fix was locked in.
 
-```
-skills/<name>/
-├── SKILL.md          ← Claude reads this — trigger phrases, workflow, rules
-├── scripts/          ← Python automation
-│   └── *.py
-└── references/       ← Config, templates, data
-    └── *.json / *.md
-```
+---
 
-### Self-improving loop
+## Who this is for
 
-```
-Claude call
-    │
-    ▼
-call_claude_with_critique()   ← retries automatically on hard failure
-    │
-    ▼
-token_usage.jsonl   ← every call logged (skill, step, tokens, critique result)
-    │
-    ▼
-critique_analysis.py  ← weekly: surfaces hard failure patterns
-    │
-    ▼
-prompt_health.md  ← shown at session start if issues exist
-    │
-    ▼
-prompt-health-refactor skill  ← HITL: propose fix → you approve → apply → test
-    │
-    ▼
-Lower failure rate on next run  ← system improves itself
-```
+- PMs and operators who want to own their full workflow end to end — not just prompt
+- Engineers building personal or team-level AI infrastructure
+- Anyone who thinks in systems and wants AI that compounds, not just assists
+
+---
 
 <!-- ARCH-DIAGRAM-START -->
 ## Architecture
