@@ -75,6 +75,64 @@ lets you swap the synthesis layer without rebuilding the search logic.
 
 ---
 
+## PM Loop
+
+**Scaffold gives you:** `jira-pm` — an AI-assisted PM lifecycle with three modes:
+OPEN (voice/text → PRD → JIRA epic + stories), BUILD (story → in-progress + plan),
+and CLOSE (done + PR linked + Confluence updated).
+
+**What grows naturally:**
+
+The `jira-pm` skill gives you the backlog orchestration layer. Extend it with an
+automated capture front-end:
+
+| Addition | How it works |
+|---|---|
+| `audio-interview-bridge` | Drop a voice recording (interview, meeting, brain-dump) and the pipeline auto-transcribes via Whisper, distils requirements via Claude, routes to the right JIRA project, and posts to Slack for your one-word approval before creating the PRD and epic. |
+| Smart routing | A Claude classifier reads the distilled content and picks the best JIRA project — not by filename convention but by understanding what the content is about. Confidence + rationale surface in the Slack message so you can verify before approving. |
+| HITL gate | The Slack approval step is the only manual moment in the chain. Everything before it is administration. Everything after it is execution. This is the right place for judgment: post-distillation, pre-creation. |
+| `idea-backlog` | A centralised backlog outside JIRA for ideas that aren't ready for epics yet. Intake via Slack, chat, or file. Kanban view, autonomous prioritisation, and triage mode. |
+
+**The pipeline end-to-end:**
+
+```
+Voice recording (only manual step: drop the file)
+      │
+      ▼
+Whisper transcription → Google Drive
+      │
+      ▼
+Claude: distil to structured "sound bytes"
+      │
+      ▼
+Claude: classify to correct JIRA project (with confidence + rationale)
+      │
+      ▼
+Slack: post for your review → reply "yes" / "edit <text>" / "skip"
+      │
+      ▼
+Confluence PRD created
+JIRA epic created (linked to PRD)
+JIRA stories created (with acceptance criteria + dependency links)
+```
+
+**The HITL design principle:**
+
+Automate the pipeline. Preserve the gate.
+
+The approval step is not a concession to automation anxiety. It is the point where
+your judgment — which requirements to build, in which priority, for which outcome —
+shapes what gets built. Removing it would automate the wrong thing. Keeping it
+means the pipeline removes all the administrative overhead while preserving the
+PM's actual decision.
+
+**Setup notes:**
+- Requires: Whisper (`pip install openai-whisper` + `brew install ffmpeg`), Slack bot (Socket Mode), Confluence + JIRA MCP (`mcp-atlassian`)
+- Config: `skills/audio-interview-bridge/references/routing_config.json` — define your JIRA projects and their descriptions; the router uses these to classify
+- The daemon runs as a background process (launchd on Mac, systemd on Linux), polling a watch folder every 30 seconds
+
+---
+
 ## Document Production
 
 **Scaffold gives you:** `process-diagram` — text description → draw.io XML.
@@ -96,6 +154,17 @@ All of these follow the same pattern: Claude writes Python inline (via Bash), ru
 and produces the file. No pre-existing scripts required. The skill just needs to know
 which library to use and what the output path should be.
 
+**Stripping AI patterns before publishing:**
+
+Any content produced by Claude for public use — posts, articles, emails, reports —
+benefits from a humanize pass before it leaves your system. The `humanize-ai-writing`
+skill applies two passes: first stripping the structural patterns that mark AI output
+(em dashes, rule-of-three adjective lists, banned verbs like "leverage"/"spearhead"),
+then checking that the voice is specific and concrete rather than promotional and generic.
+
+The banned-list in `skills/humanize-ai-writing/references/banned-list.md` is the
+working reference — adapt it to your own voice.
+
 **One rule that prevents most PDF layout bugs:**
 Hard-wrap text at 65 characters. Set explicit container sizes. Never let ReportLab
 infer dimensions from content — it will always guess wrong.
@@ -104,16 +173,16 @@ infer dimensions from content — it will always guess wrong.
 
 ## Financial OS
 
-**Scaffold gives you:** One skill for portfolio tracking and FIRE modelling.
+**Scaffold gives you:** One skill for portfolio tracking and net worth modelling.
 
 **What grows naturally:**
 
 | Addition | When you need it |
 |---|---|
 | Statement ingestion | When you have 4+ platforms and manual entry is the bottleneck |
-| Consolidated workbook | When you want one Excel file with a dashboard, per-platform sheets, and asset class summary — rebuilt from raw statements on demand |
-| FIRE scenario modelling | When you want to run "what if I move countries / change income / retire in N years" calculations against your actual numbers |
-| Tax situation skill | When cross-border moves (residency changes, CGT timing, wealth tax) make the tax picture complex enough to need a dedicated skill |
+| Consolidated workbook | When you want one file with a dashboard, per-platform sheets, and asset class summary — rebuilt from raw statements on demand |
+| Portfolio modelling | When you want to run "what if I change income / adjust allocations" calculations against your actual numbers |
+| Tax situation skill | When your tax situation involves multiple account types or jurisdictions and needs a dedicated skill |
 
 The foundation is a canonical data folder that all financial skills read from. Agree
 on its location once, hard-code it into each skill's `references/config.md`, and
@@ -355,6 +424,72 @@ Three properties that distinguish a loop from a one-off automation:
 3. **Always-exit-0 scripts** — loop scripts must never block the foreground workflow.
    If `session_lens_sync.py` crashes, the session still closes. If `kb_frontier.py`
    fails, the brief still generates. Loops are additive, not load-bearing.
+
+---
+
+## Self-Improving Loop
+
+**Scaffold gives you:** Static skills that work the same way on run 1 and run 100.
+
+**What grows naturally:**
+
+A skill library that monitors itself, surfaces its own failures, and fixes them
+through a human-in-the-loop workflow.
+
+| Component | What it does |
+|---|---|
+| `call_claude_with_critique()` | Every Claude call is wrapped: auto-retry on hard failure, critique function validates output structure, all results logged to `token_usage.jsonl` |
+| `critique_analysis.py` | Weekly script: reads the log, finds steps with high hard-failure rates or exhausted retries, writes issues to `prompt_health.md` |
+| `prompt-health-refactor` | HITL skill: reads open issues, traces them to source code, proposes targeted fixes, applies them after your approval |
+| `self-correction` | When a skill fails at runtime, diagnoses the error type, applies the appropriate fix, re-runs the workflow, and logs the outcome |
+
+**The loop:**
+
+```
+Claude call
+    │
+    ▼
+call_claude_with_critique()   ← retries on hard failure
+    │
+    ▼
+token_usage.jsonl             ← every call logged
+    │
+    ▼
+critique_analysis.py          ← weekly: finds failure patterns
+    │
+    ▼
+prompt_health.md              ← surfaced at session start if issues exist
+    │
+    ▼
+prompt-health-refactor        ← HITL: propose → approve → apply → test
+    │
+    ▼
+Lower failure rate            ← system improves itself
+```
+
+**What this costs to set up:**
+
+The `call_claude_with_critique()` wrapper is in `lib/claude_utils.py`. Importing
+it instead of calling Claude directly is the only change needed in each skill's
+Python scripts. Everything else — logging, analysis, health reporting — is handled
+by the shared infrastructure.
+
+The payoff: a step that was failing 89% of the time is fixed once and never fails
+again. The monitor caught it. The feedback loop surfaced it. The fix was locked in.
+
+**Step map:**
+
+Every instrumented step must be registered in `references/step_map.json` (inside
+`prompt-health-refactor`). This is how the refactor skill traces a failure back to
+the source code. Add one entry per `call_claude_with_critique()` call:
+
+```json
+"your-skill/step-name": {
+  "file": "skills/your-skill/scripts/your_script.py",
+  "symbols": ["build_prompt", "_critique_fn"],
+  "fix_type": "prompt_and_critique"
+}
+```
 
 ---
 
