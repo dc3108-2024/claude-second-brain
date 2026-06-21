@@ -84,11 +84,35 @@ The monitor caught it. The feedback loop surfaced it. The fix was locked in.
 ---
 
 <!-- ARCH-DIAGRAM-START -->
-## Architecture
+## How it works
 
-[![Second Brain Scaffold Architecture](./docs/arch-public.png)](./docs/arch-public.pdf)
+The factory's output is **new agentic applications**. The shared infrastructure
+makes each one cheaper to build than the last.
 
-*[View full architecture PDF](./docs/arch-public.pdf) — auto-updated weekly.*
+```
+INPUTS
+voice memos · files & data · notes · web research · data feeds
+                             │
+                             ▼
+APPS & WORKFLOWS PRODUCED — marginal cost falls with every new build
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│ Financial OS │ Learning OS  │   PM Loop    │  Home OS     │
+│    weeks     │    days      │    hours     │   weekend    │
+└──────────────┴──────────────┴──────────────┴──────────────┘
+                             │
+                             ▼
+┌────────────────────────────────────────────────────────────┐
+│                      SHARED HARNESS                        │
+│  Claude instrumentation  ·  prompt health monitor          │
+│  memory layer  ·  self-correcting feedback loops           │
+│  single Slack interface across all modules                 │
+│                                          ↩ fix once,       │
+│                                            all improve     │
+└────────────────────────────────────────────────────────────┘
+                             │
+                             ▼
+    New applications. Same complexity. Lower cost every time.
+```
 <!-- ARCH-DIAGRAM-END -->
 
 ---
