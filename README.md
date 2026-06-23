@@ -41,6 +41,8 @@ sent. `build KEY-N` → story moved to In Progress, writing plan generated.
 The PM owns the full cycle — from raw idea to developer-ready backlog — without
 handing off at any step.
 
+[Read the runbook →](./docs/pm-pipeline-runbook.md)
+
 ---
 
 ## The factory model
