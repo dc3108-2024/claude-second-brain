@@ -136,3 +136,11 @@ The PM never sees a raw transcript or a classification API call. They see a Slac
 message with distilled requirements, a routing decision, a confidence level, and
 one sentence explaining why. That is the right level of visibility — enough to
 catch errors, not enough to require effort on every run.
+
+---
+
+## See Also
+
+This document covers the routing module only. For the full pipeline — from approval
+through PRD creation, JIRA epic, BUILD, and CLOSE — see the
+[PM Pipeline Runbook](../pm-pipeline-runbook.md).

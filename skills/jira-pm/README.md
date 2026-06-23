@@ -86,3 +86,11 @@ Both gates capture your inline notes and post them as comments on the relevant J
 ## Infrastructure detection
 
 When a feature is infra-heavy (daemon, CLI dependency, data pipeline, system integration), the skill detects it automatically and offers to generate an Architecture document as a child of the PRD page. This also adds an architecture story to the backlog with acceptance criteria derived from the signal type.
+
+---
+
+## See Also
+
+For the full operating guide — execution paths, HITL gate behaviour, non-obvious nuances
+(JIRA comments → plan spec, branch naming requirement, Slack as completion signal not CTA),
+and known gaps — see the [PM Pipeline Runbook](../../docs/pm-pipeline-runbook.md).

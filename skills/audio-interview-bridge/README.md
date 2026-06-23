@@ -103,6 +103,14 @@ After distillation, the daemon posts a summary to Slack. Reply:
 
 ---
 
+## See Also
+
+The bridge delivers requirements into the PM pipeline. For the full lifecycle from
+that point — PRD creation, JIRA epic, BUILD, CLOSE, and BRIDGE auto-close — see the
+[PM Pipeline Runbook](../../docs/pm-pipeline-runbook.md).
+
+---
+
 ## Customising the router
 
 Edit `references/routing_config.json` — add a description for each JIRA project that tells Claude what kinds of interviews belong there. The router uses these descriptions for semantic matching, not keyword rules.

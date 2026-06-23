@@ -235,3 +235,12 @@ brew install ffmpeg
 - Slack bot (Socket Mode) — see `skills/audio-interview-bridge/references/routing_config.json.example`
 - Confluence + JIRA via `mcp-atlassian`
 - `jira-pm` skill (provides the OPEN flow downstream)
+
+---
+
+## See Also
+
+The audio bridge covers the pipeline up to JIRA story creation. For the full lifecycle —
+BUILD (story → In Progress → implementation plan), CLOSE (Done → PR → PRD updated),
+and BRIDGE (auto-close from branch name) — see the
+[PM Pipeline Runbook](../pm-pipeline-runbook.md).

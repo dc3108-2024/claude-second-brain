@@ -11,3 +11,9 @@ in this repo.
 
 These are not examples written for documentation. They are the actual PRDs that
 drove the implementation — written before the code, validated after.
+
+---
+
+For the full operational guide — how features move from PRD through BUILD to shipped
+story, HITL gates, BRIDGE auto-close, and known gaps — see the
+[PM Pipeline Runbook](../pm-pipeline-runbook.md).

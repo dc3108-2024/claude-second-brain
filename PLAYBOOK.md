@@ -111,6 +111,7 @@ changes once, everywhere.
 - [`lib/README.md`](./lib/README.md) — `call_claude_with_critique()` and `parse_json_response()` usage
 - [EXTENDING.md → PM Workflow](./EXTENDING.md#pm-workflow) — composable script pattern (JSON in, JSON out)
 - [EXTENDING.md → Skill Architecture](./EXTENDING.md#skill-architecture) — when to split a skill
+- [PM Pipeline Runbook](./docs/pm-pipeline-runbook.md) — full OPEN/BUILD/CLOSE/BRIDGE operating guide with nuances
 
 ---
 

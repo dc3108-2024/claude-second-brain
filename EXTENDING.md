@@ -69,6 +69,10 @@ The critique function is what makes these scripts production-grade: hard failure
 automatically with the failure reason prepended, so you get valid structured output
 even when Claude decides to add prose around the JSON.
 
+The full production implementation of this pattern — OPEN/BUILD/CLOSE/BRIDGE, with
+Confluence PRDs, JIRA epic + stories, Slack HITL, and auto-close from branch name — is
+documented in the [PM Pipeline Runbook](./docs/pm-pipeline-runbook.md).
+
 ---
 
 ## Learning OS
