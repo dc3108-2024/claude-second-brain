@@ -424,6 +424,62 @@ This is the answer to "how do you govern AI in production?" — not a policy doc
 
 ---
 
+## Design principles aligned with EU AI Act & DORA
+
+This is a personal project, not a regulated system. Neither rule actually applies here,
+and for a precise reason, not just "it's personal": the AI Act's high-risk recruitment
+category (Annex III, 4(a)) covers systems an *employer* uses to screen candidates — not a
+candidate's own tooling used on themselves. DORA binds *regulated financial entities* and
+their critical ICT vendors, not an individual's personal automation. Neither rule's actor
+model fits what this is.
+
+What it does share with both is the underlying engineering problem. The tables below map
+what this repo actually does to the regulatory idea it mirrors — not a compliance claim,
+just the same discipline applied voluntarily.
+
+### EU AI Act — risk isn't a one-time check, it's managed continuously
+
+The Act's core idea, for the systems it does cover: risk management is a lifecycle, not
+a launch-day checklist — identify it, reduce it, test it, and repeat every time the system
+changes. And the tighter the potential for harm, the tighter the controls, applied
+unevenly on purpose. This repo works the same way — low-stakes steps degrade quietly;
+anything that changes real state or could mislead someone waits for a person and gets
+logged.
+
+| Rule | What it asks for | What's actually built |
+|---|---|---|
+| Art. 9 — Risk management | An ongoing cycle, not a one-time sign-off: find risks, fix them, test, repeat as the system evolves | Every new capability goes through the same loop — build the safeguard, write a test that proves it works, ship it, watch it in production, adjust. Nothing is "done" once and left alone |
+| Art. 14 — Human oversight | A person can review and stop things before they happen | Nothing fires on its own. Every action that changes something (an approval, a memory write) waits for a person to say yes first |
+| Art. 12 — Record-keeping | Keep a trail of what the system did | Every AI call is logged — what it was, how long it took, which model answered, whether it passed. One live document lists every call site in the whole system, and it updates itself |
+| Art. 13 — Transparency | You can see why the system did what it did | Which model answered, and whether it worked, gets logged every single time. Nothing happens in a black box |
+| Art. 10 — Data governance | Protect personal data before using it | Personal data gets stripped out before any AI model sees it — not after, before. That step runs on plain code, no AI involved, so it's predictable and testable |
+| Art. 15 — Accuracy & robustness | Don't produce made-up information | Anything that could invent facts (like resume content) is only allowed to reuse real material from a source document. If it can't back something up, it has to say so instead of guessing |
+
+### DORA — assume something will break, build to notice and recover fast
+
+DORA's core idea isn't "prevent every failure" — it's treating ICT failure as certain,
+not hypothetical, and designing for fast detection, containment, and recovery, with the
+same seriousness a bank gives liquidity risk rather than treating it as an IT afterthought.
+Same stance here, across its main pillars.
+
+| Area | What's actually built |
+|---|---|
+| ICT risk management — don't depend on one vendor | If the main AI provider goes down, it switches to a backup automatically — one setting change, no rewrite |
+| Incident classification — catch problems early | Every failure gets sorted into a category automatically (bad output, wrong format, etc.) and reviewed on a regular schedule — not discovered by accident |
+| Resilience testing — prove it actually works | Nothing new ships without a test that proves it fixes the specific problem it's meant to fix |
+| Third-party ICT risk — don't get locked in | Swapping the AI model underneath is a config change, not a rewrite |
+
+### Why this matters, plainly
+
+The point isn't "is this compliant" — neither rule actually reaches a personal project.
+The point is that the things regulators worry about — an AI system nobody can stop, one
+that makes things up, one with no record of its own decisions, one that depends on a
+single vendor with no way out — are also just bad engineering, in any context. Fixing
+them because the regulation asks for it, and fixing them because it's the right way to
+build a system, turned out to be the same job.
+
+---
+
 ## Memory
 
 Claude's memory system persists facts, preferences, and project context across
