@@ -124,6 +124,43 @@ Reads `pending_fixes/`, traces each issue to source via `step_map.json`, present
 
 ---
 
+## Auto-fix: closing the loop for known infra failures
+
+Not every failure needs a human. HITL fix workflow handles prompt/critique *quality*
+issues that need judgement — auto-fix handles infra failures with one deterministic,
+provably-correct answer, and applies it without waiting for a review cycle.
+
+```bash
+python3 ~/.claude/monitor/autofix.py --days 7          # scan + apply
+python3 ~/.claude/monitor/autofix.py --days 7 --dry-run # scan only, no changes
+```
+
+Reads the routing log for fallback events, matches each `fallback_reason` against a
+registry of handlers by regex, and — if matched — runs a strict three-step contract:
+
+```
+check()   → is the fix already applied? skip if so
+apply()   → make the change, return what changed
+verify()  → confirm the fix actually landed
+```
+
+Every outcome (`fixed` / `already_ok` / `verify_failed` / `apply_error` / `no_match`) is
+logged to `autofix_log.jsonl` and, if anything actionable happened, posted to Slack as a
+one-line summary per handler. A pattern with no matching handler is reported, not
+silently dropped — "no handler for this yet" is itself a signal, surfaced the same way
+an unhandled failure would be.
+
+**Adding a new handler:** subclass `FixHandler`, implement `check()` / `apply()` /
+`verify()`, register a `pattern` (regex matched against the fallback reason) and a
+`description`, append an instance to `FIX_REGISTRY`. Two working examples ship with the
+monitor — a PATH-augmentation fix for `claude` subprocess calls failing under
+launchd/cron's minimal environment, and a workspace-trust-dialog fix for automated runs
+hitting an unaccepted trust prompt. Both are the kind of failure that's tedious to
+re-diagnose by hand every time it recurs, and completely safe to fix the same way once
+the pattern is known.
+
+---
+
 ## Pre-commit enforcement (5 gates)
 
 ```bash

@@ -49,7 +49,7 @@ _MODELS_FILE = Path(__file__).parent.parent / "lib" / "models.json"
 
 _MODEL_DEFAULTS: dict[str, str] = {
     "fast":     "claude-haiku-4-5-20251001",   # extraction, classification, formatting
-    "balanced": "claude-sonnet-4-6",             # analysis, comparison, explanation
+    "balanced": "claude-sonnet-5",                # analysis, comparison, explanation
     "creative": "claude-fable-5",                # writing, drafting, content generation
     "heavy":    "claude-opus-4-8",               # synthesis, multi-step reasoning, strategy
 }

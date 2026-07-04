@@ -85,7 +85,7 @@ Tier-to-model mapping. Edit here to upgrade or swap models without touching any 
 {
   "tiers": {
     "fast":     "claude-haiku-4-5-20251001",
-    "balanced": "claude-sonnet-4-6",
+    "balanced": "claude-sonnet-5",
     "creative": "claude-fable-5",
     "heavy":    "claude-opus-4-8"
   }
