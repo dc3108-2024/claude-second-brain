@@ -1,0 +1,29 @@
+{
+  "_note": "Config for the Fingerprint Method. 'register' lets you keep more than one voice (e.g. an internal working voice and a public writing voice). 'pass_bar' is the score a draft must reach to ship. 'redaction_patterns' are stripped from the corpus before it becomes the grounding block.",
+
+  "pass_bar": 8,
+  "max_attempts": 3,
+
+  "registers": {
+    "internal": {
+      "sources": [
+        "corpus/internal_voice.md"
+      ]
+    },
+    "public": {
+      "sources": [
+        "corpus/public_voice.md"
+      ]
+    }
+  },
+
+  "_redaction_note": "Replace these with patterns that fit YOUR corpus. Anything that identifies a person, an employer, a client, an account, or a location should be here. Keep the pattern; drop the data.",
+  "redaction_patterns": [
+    "<full names of colleagues / clients / third parties>",
+    "<employer and client organisation names>",
+    "<email addresses and phone numbers>",
+    "<account numbers, IDs, reference codes>",
+    "<street addresses and specific locations>",
+    "<any figure that is sensitive in your context>"
+  ]
+}
