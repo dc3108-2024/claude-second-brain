@@ -8,6 +8,9 @@ in a calm, structured tone." A description hands the model an adjective, and adj
 shared property — everyone's prompt says the same thing. The output comes back on-brief and
 completely generic.
 
+I spent weeks writing careful descriptions of my own voice before I accepted that the
+description was the problem, not the model.
+
 The fix is two moves: **ground**, then **gate**.
 
 ---
@@ -42,8 +45,8 @@ fingerprint, and it is injected into every generation prompt.
 **Gate.** Grounding alone is not enough — models drift, and voice degrades quietly. So a second
 model scores each draft against the fingerprint and holds anything below a set bar. Off-voice
 drafts do not ship; they wait for a human. This turns voice from a prompt-writing problem into
-an **evaluation problem** — the same eval-harness machinery engineers already use for
-correctness, pointed at voice instead.
+an **evaluation problem** — the same score-and-gate loop engineers already use to check
+whether an answer is right, pointed at whether it sounds like you instead.
 
 Simple test for whether it works: *could the output pass as you to someone who knows your
 writing?* A description never survives that. A fingerprint does.
@@ -95,6 +98,9 @@ no extra effort, and the judge keeps every new agent aligned to it automatically
 
 Describe your voice, and a model approximates you. Ground it in evidence, and it recognises you.
 Gate it with a judge, and it stops drifting.
+
+So the question worth asking of your own agents: could their output pass as you to someone who
+knows your work?
 
 ---
 
