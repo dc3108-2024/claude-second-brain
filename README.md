@@ -7,6 +7,21 @@ work you do today compounds into better, faster output next month.
 
 ---
 
+## Three builds, up close
+
+Start here. Each is a short, plain-English walkthrough of a real build — the problem,
+what changed, and the thinking underneath — with the technical detail one click further in.
+
+- **[JIRA PM Factory →](./docs/builds/JIRA_PM_FACTORY.md)** — a stakeholder conversation
+  becomes a ready, dependency-mapped JIRA backlog the same day, with a person signing off at
+  every gate.
+- **[Feedback Loops →](./docs/builds/FEEDBACK_LOOPS.md)** — how an AI system gets *better* the
+  more it runs: checks before it ships and while it runs, and a fix that can never quietly regress.
+- **[Financial OS →](./docs/builds/FINANCIAL_OS.md)** — a drawer full of statements becomes one
+  live position, with personal data stripped before any model sees it.
+
+---
+
 ## What this has produced
 
 Not demos. Not examples. Real features, built end to end, with the skills in this repo:
