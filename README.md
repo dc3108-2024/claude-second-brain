@@ -9,8 +9,9 @@ work you do today compounds into better, faster output next month.
 
 ## Three builds, up close
 
-Start here. Each is a short, plain-English walkthrough of a real build — the problem,
-what changed, and the thinking underneath — with the technical detail one click further in.
+Start here. Each is a real build, walked through the way I think about it — the strategic
+call first, then the mechanism one click in. Together they're one view of how agentic AI
+earns a place in regulated finance, from someone who's delivered inside those rules.
 
 - **[JIRA PM Factory →](./docs/builds/JIRA_PM_FACTORY.md)** — a stakeholder conversation
   becomes a ready, dependency-mapped JIRA backlog the same day, with a person signing off at
