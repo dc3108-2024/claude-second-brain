@@ -1,35 +1,40 @@
-# JIRA PM Factory — from a stakeholder conversation to a ready backlog, the same day
+# JIRA PM Factory — where I put AI in the delivery chain, and where I keep a human
 
-On the programmes I've run, the backlog was often the bottleneck — and the bottleneck was me.
+A view I've come to after fifteen years delivering in regulated banking, insurance and pensions:
+the expensive latency in a programme was never the build. It's upstream — in the days of senior
+judgment spent turning a conversation into a backlog a team can actually pull. So that's the work
+I chose to put AI on. Not because it's the hardest, but because it's the slowest, the most
+repeated, and the one that gates everything after it.
 
-Turning a conversation into something a team can build — a spec, stories, acceptance criteria,
-dependencies, a sensible order — is days of skilled work per feature. It's also the work you
-can't safely rush. So it stacks up on whoever's most senior. I built this to take that work off
-the critical path without dropping the standard.
+I'd led AI-tooling adoption across delivery squads before I built this, so I wasn't guessing at
+what automates cleanly. And I built this one end to end myself, for a reason I hold to: I don't
+ask a team to adopt anything I haven't first run through my own hands.
 
 > *A requirement goes in; a Confluence PRD, a JIRA epic, and dependency-mapped stories come
 > out — with a person signing off at every gate.*
 
 ---
 
-## The expensive wait is upstream of the build
+## The strategic call: automate the slow middle, keep the human at the edges
 
-Picture a real one. A large bank is remediating a collections process under a regulatory
-deadline. The requirements are clear enough after a workshop. But before an engineer touches
-anything, a BA writes it up, a PM shapes a PRD, someone slices it into stories, writes the
-acceptance criteria, works out what blocks what, sequences it, and lands it all in JIRA.
+Picture a programme I'd recognise. A large bank is remediating a collections process under a
+regulatory deadline. The requirements are clear enough after a workshop. But before an engineer
+touches anything, a BA writes it up, a PM shapes a PRD, someone slices it into stories, writes the
+acceptance criteria, works out what blocks what, sequences it, and lands it in JIRA.
 
-That round trip is days of senior time per feature — and it repeats for every feature, every
-sprint. It's also the part most sensitive to being rushed. Thin out the acceptance criteria and
-the story bounces back from dev. Skip the dependency mapping and week two blocks on week one.
-The cost of cutting a corner here shows up later, when it's most expensive to unwind.
+That round trip is days of senior time per feature, and it repeats every sprint. It's also the
+part most sensitive to being rushed — thin the acceptance criteria and the story bounces back from
+dev; skip the dependency mapping and week two blocks on week one. The cost of a cut corner here
+surfaces later, when it's most expensive to unwind.
 
-This is the slowest, most repeated step in the whole chain — which is exactly why it's the
-right thing to automate first.
+So the design decision is really two decisions, and the second matters more than the first:
+*put AI on the slow middle* — the drafting, slicing, sequencing — and *keep a human on the two
+edges* where a wrong call is expensive: agreeing the spec, and agreeing the stories. What you
+automate is a productivity question. What you refuse to automate is a governance one.
 
 ---
 
-## What changes
+## Zoom in: what actually changes
 
 ```mermaid
 flowchart LR
@@ -51,21 +56,17 @@ flowchart LR
     class G2 gate
 ```
 
-The rigour stays. Acceptance criteria, dependency links (blocks / is blocked by), and the build
-order are all still produced. What changes is that a PM now *reviews and approves* that output
-instead of *hand-typing* it. The practitioner moves from author to editor — the same senior
-judgment, applied to far more work.
-
-Worth being honest about what happened here: the bottleneck didn't disappear, it moved. It used
-to be how fast a person could write a backlog. Now it's how fast they can read one. That's a much
-better place for it to sit.
+The rigour stays — acceptance criteria, dependency links, build order, all still produced. What
+changes is that a senior person now *reviews and approves* that output instead of *hand-typing*
+it. And that's a strategic move dressed as a workflow tweak: I've shifted the senior constraint
+from authorship to review — because a backlog I've read and approved is one I can stand behind to
+a steering committee, and one a regulator can audit. The bottleneck didn't vanish; I moved it to a
+far better place. It used to be how fast a person could *write* a backlog. Now it's how fast they
+can *judge* one.
 
 ---
 
 ## The build cycle — three plain commands, two real checkpoints
-
-The pipeline runs the full lifecycle. A person owns every step that changes a client's system;
-nothing lands in JIRA on its own.
 
 ```mermaid
 flowchart TD
@@ -100,24 +101,36 @@ flowchart TD
 | `build KEY-N` | Moves the story to In Progress, pulls the criteria and any review notes into a build plan | The engineer picks it up |
 | `close KEY-N, PR: <url>` | Moves the story to Done, links the PR, adds a dated shipped note to the Confluence PRD | Nobody — the record writes itself |
 
-A voice note can also start the cycle: it's transcribed on the machine, cleaned up into plain
-requirements, sent to the right JIRA project by what it's *about* rather than its filename, and
+A voice note can also start the cycle: it's transcribed on the machine, cleaned into plain
+requirements, routed to the right JIRA project by what it's *about* rather than its filename, and
 held at an approval message before anything is created.
 
 ---
 
-## What it changes in practice
+## What it changes for a delivery organisation
 
-- The scarcest thing on a programme is senior PM/BA time. The limit stops being how fast
-  someone can write a backlog and becomes how fast they can check one.
-- The control is part of the design, not bolted on afterwards. Two human checkpoints sit
-  exactly where a wrong automated call would be costly — approving the spec, and approving the
-  stories. Nothing reaches a client's system unread.
-- The paper trail is automatic. Every feature carries a PRD, a linked epic, and a shipped
-  record with the PR and the date — written as the work happens, not reconstructed later.
-- It gets cheaper each time. The pipeline is shared infrastructure, so the second feature costs
-  less than the first, and the tenth less again. The wait between "we agreed this" and "a team
-  can pull it" drops from days to a supervised few minutes.
+- Senior PM/BA judgment is the scarce resource on any programme. This stops it being spent on
+  producing backlogs and puts it on deciding them.
+- The control is the design, not a bolt-on. Two human checkpoints sit exactly where a wrong
+  automated call would be costly — nothing reaches a client's system unread.
+- The audit trail writes itself. Every feature carries a PRD, a linked epic, and a shipped
+  record with the PR and date — the evidence a steering committee or a regulator asks for,
+  captured as the work happens rather than reconstructed after it.
+- It's a capability a team keeps, not a one-off. The pipeline is shared infrastructure, so the
+  tenth feature is cheaper than the first — the marginal cost of good delivery keeps falling.
+
+---
+
+## How I'd run this on a client engagement
+
+Wire it to the client's own JIRA and Confluence. Keep the two gates as the governance contract
+with their delivery leadership. Then use it to change the PM/BA mix — from producing backlogs to
+making decisions — which is the same shift I led when I took GitHub Copilot across the
+data-engineering squads and standardising the requirements-to-code path cut build effort by
+roughly a fifth.
+
+The pipeline is a few weekends of work. The judgment about where AI belongs in a regulated
+delivery chain, and where it must not go, is the fifteen years.
 
 ---
 

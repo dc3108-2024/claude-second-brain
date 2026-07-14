@@ -1,33 +1,30 @@
-# Financial OS — one live picture from a drawer full of statements
+# Financial OS — the difference between AI that's functional and AI you can trust with money
 
-My money lived in a dozen places, each with its own statement in its own layout. To see the whole
-position I'd open each one, copy the figures into a master sheet, reconcile the totals — and by the
-time I finished, it was already out of date. So I kept making decisions on a stale picture. I built
-this to stop doing that by hand.
+Every bank is trying to buy roughly the same thing: a pipeline that reads messy documents from a
+dozen source systems, survives their format changes, and produces figures people can act on. The
+*functional* version of that is easy — a model reads a document and returns numbers. The
+*trustworthy* version is the entire job, and it's a different job. I built the small one, over my
+own financial statements, to prove I understand which one is which.
 
-> *Statements go in — PDFs, spreadsheet exports, CSVs. A single consolidated position comes out.
-> The personal data is stripped before any model sees it, and a person signs off anything that
-> changes a number that decisions depend on.*
-
-**Who this is for:** people working in financial services who'll recognise the shape of this
-immediately — messy documents, a dozen formats, reconciliation, an audit trail. It's the same
-problem a bank spends heavily on, just at kitchen-table scale.
-
----
-
-## The problem
-
-Anyone with more than a couple of accounts hits the same wall. The numbers are scattered, in
-formats that don't agree, and pulling them together is slow and easy to get wrong. Because it's
-tedious, it happens rarely — so the picture you decide on is always a little bit old.
-
-The part that interested me is that this is a small copy of a big problem. Swap "my accounts" for
+The honest reason it exists: my money lived in a dozen places, each with its own statement in its
+own layout, and by the time I'd added it all up by hand it was already out of date. So I kept
+making decisions on a stale picture. But the interesting part was never my admin. It was noticing
+that this is a bank's problem wearing a kitchen-table costume — swap "my accounts" for
 "counterparty statements" or "sub-ledger extracts" and it's exactly the document-ingestion-and-
-reconciliation work financial institutions pour money into.
+reconciliation work financial institutions spend heavily on.
+
+> *Statements go in — PDFs, spreadsheet exports, CSVs. One consolidated position comes out. The
+> personal data is stripped before any model sees it, and a human signs off anything that sets a
+> number others rely on.*
 
 ---
 
-## What it does
+## The strategic frame: trustworthy is a set of controls, not a better model
+
+A functional pipeline and a trustworthy one can produce the same number on a good day. The
+difference only shows on a bad one — a changed layout, an ambiguous figure, a value that's subtly
+wrong. Trustworthy isn't a smarter model; it's a set of deliberate controls around an ordinary
+one. Those controls are the product.
 
 ```mermaid
 flowchart LR
@@ -51,31 +48,29 @@ flowchart LR
     class GATE gate
 ```
 
-Drop new statements in a watched folder and it runs itself: reads each document, pulls the figures
-out whatever the layout, lines them all up into one shape, checks the result, and produces a single
-report. What used to be an afternoon of copy-paste each week is now a job that just runs — hours
-of manual work a week, gone.
-
 ---
 
-## How it's built — and the one rule that matters
+## Zoom in: the controls, and the one rule that governs them
 
 I built it to be boring where it has to be trusted, and clever only where judgment is actually
 needed.
 
 - **Personal data is stripped first, by plain code — not the model.** Anything sensitive is gone
-  before a single figure reaches an AI. Because that step is plain code, it's predictable and I can
-  test it. The model only ever sees de-identified numbers.
+  before a single figure reaches an AI. Because that step is plain code it's predictable and
+  testable; the model only ever sees de-identified numbers. That's data governance done before
+  processing, not after — the same order a bank has to do it in.
 - **Reading the figures out doesn't depend on a fixed template.** Instead of a brittle parser per
   provider, the model reads the document and returns the fields — so a new provider or a changed
-  layout doesn't break it.
-- **Everything gets lined up to one shape.** Different providers name the same thing five ways; one
-  agreed shape is the source of truth, so the final view compares like with like.
-- **The one rule I'd put on a wall: flag, don't fabricate.** A second look judges each reading, and
-  hard rules catch impossible values. Anything the system isn't sure about gets flagged for me — it
-  never quietly guesses. When the output is money, that's the rule that matters most.
-- **A person signs off anything that sets a number decisions rely on.** The report writes itself;
-  committing a figure others depend on waits for a human yes.
+  layout doesn't break it. Resilience to format drift is the whole reason enterprises want this.
+- **Everything is lined up to one shape.** Different providers name the same thing five ways; one
+  agreed shape is the source of truth, so the final view compares like with like. That's a
+  canonical data model, in miniature.
+- **The rule I'd put on the wall: flag, don't fabricate.** A second look judges each reading, hard
+  rules catch impossible values, and anything the system isn't sure about is flagged for a human —
+  it never quietly guesses. When the output is money, that is the rule that matters most, and it's
+  the maker-checker discipline every ledger already runs on.
+- **A person signs off any number others will rely on.** The report writes itself; committing a
+  figure that downstream decisions depend on waits for a human yes.
 
 Every AI call in the pipeline is watched and double-checked, so if a reading step starts to drift,
 the [feedback loops](./FEEDBACK_LOOPS.md) catch it and it gets fixed once, for good.
@@ -93,8 +88,9 @@ the [feedback loops](./FEEDBACK_LOOPS.md) catch it and it gets fixed once, for g
 | Flag when unsure, never guess | Controls on generated figures — accuracy and robustness |
 | A person signs off any number that's set | Maker-checker on anything that touches the record |
 
-The reason this sits on a profile and not just in a private folder: the domain happens to be
-personal finance, but the engineering is the same one banks are trying to buy.
+That column on the right is why this sits on a profile and not just in a private folder. The
+domain is personal finance. The engineering — and the judgment about what makes a figure
+trustworthy rather than merely produced — is what a bank is trying to buy.
 
 ---
 
