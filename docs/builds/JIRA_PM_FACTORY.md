@@ -128,8 +128,8 @@ making decisions — which is the same shift I led when I took GitHub Copilot ac
 data-engineering squads and standardising the requirements-to-code path cut build effort by
 roughly a fifth.
 
-The pipeline itself is a few weekends of work. The judgment about where AI belongs in a regulated
-delivery chain, and where it must not, is the part that took fifteen years.
+The pipeline is a few weekends of work. The harder part is the judgment about where AI belongs in
+a regulated delivery chain, and where it shouldn't go.
 
 ---
 

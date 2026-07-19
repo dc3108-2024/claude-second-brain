@@ -88,8 +88,8 @@ the [feedback loops](./FEEDBACK_LOOPS.md) catch it and it gets fixed once, for g
 | A person signs off any number that's set | Maker-checker on anything that touches the record |
 
 That column on the right is why this sits on a profile and not just in a private folder. The
-domain is personal finance. The engineering, and the judgment about what makes a figure
-trustworthy rather than just produced, is what a bank is trying to buy.
+domain is personal finance, but the engineering and the judgment behind a trustworthy figure are
+the part that transfers to a bank.
 
 ---
 

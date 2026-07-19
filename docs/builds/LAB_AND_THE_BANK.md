@@ -48,7 +48,7 @@ that has to maintain it afterwards.
 Lab-proven, then governed. I bring enterprises patterns I've run at my own risk and then shipped
 under real governance - not ones I've only read about.
 
-So it's worth asking of anyone selling AI experience: are you buying someone who has read the
-patterns, or someone who has already governed them in production?
+So with anyone selling AI experience, it's worth checking whether the patterns have actually been
+run and governed in production, or only read about.
 
 **[← Back to the builds](../../README.md#three-builds-up-close)**

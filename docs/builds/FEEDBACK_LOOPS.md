@@ -15,7 +15,7 @@ engineer.
 
 ---
 
-## The strategic point: the model is the easy 20%
+## The strategic point: the model is the easy part
 
 Shipping the model is not the hard part. The hard part is everything that keeps it trustworthy
 after launch - how you measure quality, how you catch it slipping, how you make an improvement
