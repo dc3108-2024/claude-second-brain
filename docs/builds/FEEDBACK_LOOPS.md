@@ -18,15 +18,15 @@ engineer.
 ## The strategic point: the model is the easy 20%
 
 Shipping the model is not the hard part. The hard part is everything that keeps it trustworthy
-after launch — how you measure quality, how you catch it slipping, how you make an improvement
-permanent. That discipline is the whole difference between an AI demo and an AI product, and it's
-exactly what a regulated programme is required to stand up. Get it right and you have something
-you can put in front of an auditor. Get it wrong and you have a very impressive liability.
+after launch - how you measure quality, how you catch it slipping, how you make an improvement
+permanent. That discipline is the difference between an AI demo and an AI product, and it's
+exactly what a regulated programme has to stand up. Done right, you get something you can put in
+front of an auditor. Done poorly, you get a liability that looked fine in the demo.
 
 Take a concrete one. An AI step reads loan applications and pulls out the fields that matter. It
 works on day one. Then a lender changes a document layout, extraction quality slips, and for weeks
-the system is quietly wrong — until a human spot-check catches it. The model didn't break. The
-discipline around it was missing.
+the system is quietly wrong - until a human spot-check catches it. The model didn't break - the
+missing piece was the discipline around it.
 
 ---
 
@@ -63,15 +63,15 @@ flowchart LR
   by what actually went wrong, and a health report shows whether things are trending better or
   worse. This is the smoke alarm — it catches drift while it's still cheap to fix.
 
-The two join up: a problem caught live becomes a new before-it-ships test. That's the mechanism
-that makes the quality bar only ever climb. In enterprise language this is *offline and online
-evaluation* — and the loop between them is what a serious AI programme lives or dies on.
+The two join up: a problem caught live becomes a new before-it-ships test. That's what keeps the
+quality bar rising rather than slipping. In enterprise terms this is *offline and online
+evaluation*, and the loop between them is what a serious AI programme depends on.
 
 ---
 
 ## Zoom in: one pattern under every loop
 
-Once I'd built a few of these, they turned out to be the same machine wearing different clothes.
+Once I'd built a few of these, they turned out to be the same pattern in different forms.
 Every loop in the system runs the same six steps:
 
 ```mermaid
@@ -94,9 +94,9 @@ flowchart LR
     class S5 gate
 ```
 
-The step that carries the whole idea is the last one: **lock in**. Plenty of systems recover from
-a failure — but if the fix isn't made permanent, the same fault returns and you fix it forever.
-Locking each fix behind a test means effort *compounds* instead of repeating. That one choice is
+The step that matters most is the last one: **lock in**. Plenty of systems recover from a
+failure, but if the fix isn't made permanent, the same fault returns and you keep fixing it.
+Locking each fix behind a test means the effort *compounds* instead of repeating. That one choice is
 why the failure rate trends down over time instead of staying flat. It worked in practice: one
 step was failing 89% of the time; notice it, surface it, approve the fix, lock it in — near zero,
 and it hasn't come back.
@@ -106,9 +106,9 @@ and it hasn't come back.
 ## Where this lands in a bank
 
 The words differ but the machinery is the same one a regulated AI programme has to build. This
-isn't a compliance claim — it's a personal system — just the same engineering discipline, done
-because it's the right way to build. What I find worth saying: the risk habits I learned in
-banking and the engineering of a feedback loop turned out to be the same job in two vocabularies.
+isn't a compliance claim - it's a personal system, using the same engineering discipline because
+it's the right way to build. The risk habits I learned in banking and the engineering of a
+feedback loop turned out to be the same work, described in two different vocabularies.
 
 | What a bank calls it | What it means, plainly | How this does it |
 |---|---|---|
@@ -118,9 +118,9 @@ banking and the engineering of a feedback loop turned out to be the same job in 
 | **Operational resilience** | Assume things break; notice and recover fast | A watchdog, an auto-retry, and a memory of past failures |
 | **Human oversight** | A person can review and stop things | Two deliberate points where I approve before it proceeds |
 
-For AI product leadership, this is a straight answer to *"how do you govern AI once it's live?"* —
-not a policy slide, but a running system with a timestamped record of every decision, which I ran
-against my own work before I'd put the idea in front of anyone else.
+For AI product leadership, this is a direct answer to *"how do you govern AI once it's live?"* -
+a running system with a timestamped record of every decision, which I ran against my own work
+before putting the idea in front of anyone else.
 
 ---
 

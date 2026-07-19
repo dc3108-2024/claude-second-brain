@@ -1,7 +1,7 @@
 # The lab and the bank — one discipline, two proving grounds
 
-The lab and the bank aren't two careers. They're one discipline on two proving grounds — and the
-personal builds are the half most people misread.
+The lab and the bank are one discipline on two proving grounds. The personal builds are the part
+most people misread.
 
 ---
 
@@ -9,8 +9,8 @@ personal builds are the half most people misread.
 
 I prove agentic patterns on my own system first — the evaluation loops, the human gates, the
 EU AI Act and DORA discipline — at my own risk, before any of it goes near a client. It's cheaper
-to learn what doesn't hold up on my own work than on someone's regulated one. What survives is
-what I bring.
+to learn what doesn't hold up on my own work than on a client's regulated one. I only bring the
+patterns that survive that.
 
 ---
 
@@ -37,18 +37,18 @@ flowchart LR
     class ENT ent
 ```
 
-The lab keeps me current on what agentic systems can do. The enterprise keeps me honest about what
+The lab keeps me current on what agentic systems can do. The enterprise shows me what actually
 survives Model Risk on a collections remediation, a regulator on a pension merger, and the team
-that has to maintain it on Monday.
+that has to maintain it afterwards.
 
 ---
 
 ## The method
 
-Lab-proven, then governed. I don't bring enterprises patterns I've only read about — I bring ones
-I've run at my own risk, then shipped under someone else's.
+Lab-proven, then governed. I bring enterprises patterns I've run at my own risk and then shipped
+under real governance - not ones I've only read about.
 
-So the question I'd ask back is the one worth asking of anyone: when you buy "AI experience", are
-you buying someone who's read the patterns, or someone who's already governed them?
+So it's worth asking of anyone selling AI experience: are you buying someone who has read the
+patterns, or someone who has already governed them in production?
 
 **[← Back to the builds](../../README.md#three-builds-up-close)**

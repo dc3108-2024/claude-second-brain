@@ -1,10 +1,10 @@
 # JIRA PM Factory — where I put AI in the delivery chain, and where I keep a human
 
 A view I've come to after fifteen years delivering in regulated banking, insurance and pensions:
-the expensive latency in a programme was never the build. It's upstream — in the days of senior
-judgment spent turning a conversation into a backlog a team can actually pull. So that's the work
-I chose to put AI on. Not because it's the hardest, but because it's the slowest, the most
-repeated, and the one that gates everything after it.
+the expensive delay in a programme is rarely the build. It's upstream - in the days of senior
+judgment spent turning a conversation into a backlog a team can actually pull. That's the work I
+put AI on: not the hardest work, but the slowest and most repeated, and the step that gates
+everything after it.
 
 I'd led AI-tooling adoption across delivery squads before I built this, so I wasn't guessing at
 what automates cleanly. And I built this one end to end myself, for a reason I hold to: I don't
@@ -27,10 +27,10 @@ part most sensitive to being rushed — thin the acceptance criteria and the sto
 dev; skip the dependency mapping and week two blocks on week one. The cost of a cut corner here
 surfaces later, when it's most expensive to unwind.
 
-So the design decision is really two decisions, and the second matters more than the first:
-*put AI on the slow middle* — the drafting, slicing, sequencing — and *keep a human on the two
-edges* where a wrong call is expensive: agreeing the spec, and agreeing the stories. What you
-automate is a productivity question. What you refuse to automate is a governance one.
+So there are really two decisions, and the second matters more than the first: *put AI on the
+slow middle* - the drafting, slicing, sequencing - and *keep a human on the two edges* where a
+wrong call is expensive: agreeing the spec, and agreeing the stories. Deciding what to automate is
+a productivity question; deciding what not to automate is a governance one.
 
 ---
 
@@ -56,13 +56,12 @@ flowchart LR
     class G2 gate
 ```
 
-The rigour stays — acceptance criteria, dependency links, build order, all still produced. What
+The rigour stays - acceptance criteria, dependency links, build order, all still produced. What
 changes is that a senior person now *reviews and approves* that output instead of *hand-typing*
-it. And that's a strategic move dressed as a workflow tweak: I've shifted the senior constraint
-from authorship to review — because a backlog I've read and approved is one I can stand behind to
-a steering committee, and one a regulator can audit. The bottleneck didn't vanish; I moved it to a
-far better place. It used to be how fast a person could *write* a backlog. Now it's how fast they
-can *judge* one.
+it. That's more than a workflow tweak - it shifts the senior constraint from authorship to review.
+A backlog I've read and approved is one I can stand behind to a steering committee, and one a
+regulator can audit. The bottleneck moved from how fast a person can write a backlog to how fast
+they can judge one.
 
 ---
 
@@ -129,8 +128,8 @@ making decisions — which is the same shift I led when I took GitHub Copilot ac
 data-engineering squads and standardising the requirements-to-code path cut build effort by
 roughly a fifth.
 
-The pipeline is a few weekends of work. The judgment about where AI belongs in a regulated
-delivery chain, and where it must not go, is the fifteen years.
+The pipeline itself is a few weekends of work. The judgment about where AI belongs in a regulated
+delivery chain, and where it must not, is the part that took fifteen years.
 
 ---
 

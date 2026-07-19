@@ -1,17 +1,16 @@
-# Financial OS — the difference between AI that's functional and AI you can trust with money
+# Financial OS — what it takes to make AI trustworthy with money
 
 Every bank is trying to buy roughly the same thing: a pipeline that reads messy documents from a
 dozen source systems, survives their format changes, and produces figures people can act on. The
-*functional* version of that is easy — a model reads a document and returns numbers. The
-*trustworthy* version is the entire job, and it's a different job. I built the small one, over my
-own financial statements, to prove I understand which one is which.
+*functional* version of that is easy - a model reads a document and returns numbers. The
+*trustworthy* version is the harder and much larger job. I built a small version over my own
+financial statements to show I understand the difference.
 
-The honest reason it exists: my money lived in a dozen places, each with its own statement in its
-own layout, and by the time I'd added it all up by hand it was already out of date. So I kept
-making decisions on a stale picture. But the interesting part was never my admin. It was noticing
-that this is a bank's problem wearing a kitchen-table costume — swap "my accounts" for
-"counterparty statements" or "sub-ledger extracts" and it's exactly the document-ingestion-and-
-reconciliation work financial institutions spend heavily on.
+The honest reason it exists: my money lived in a dozen places, each with its own statement
+layout, and by the time I'd added it up by hand it was already out of date, so I kept deciding on
+a stale picture. The useful part wasn't the admin. It was realising this is the same problem a
+bank has - swap "my accounts" for "counterparty statements" or "sub-ledger extracts" and it's the
+document-ingestion-and-reconciliation work financial institutions spend heavily on.
 
 > *Statements go in — PDFs, spreadsheet exports, CSVs. One consolidated position comes out. The
 > personal data is stripped before any model sees it, and a human signs off anything that sets a
@@ -19,12 +18,12 @@ reconciliation work financial institutions spend heavily on.
 
 ---
 
-## The strategic frame: trustworthy is a set of controls, not a better model
+## The strategic frame: trustworthiness comes from controls, not a better model
 
 A functional pipeline and a trustworthy one can produce the same number on a good day. The
-difference only shows on a bad one — a changed layout, an ambiguous figure, a value that's subtly
-wrong. Trustworthy isn't a smarter model; it's a set of deliberate controls around an ordinary
-one. Those controls are the product.
+difference shows on a bad one - a changed layout, an ambiguous figure, a value that's subtly
+wrong. Trustworthiness comes from deliberate controls around an ordinary model, and those
+controls are the actual work.
 
 ```mermaid
 flowchart LR
@@ -52,8 +51,8 @@ flowchart LR
 
 ## Zoom in: the controls, and the one rule that governs them
 
-I built it to be boring where it has to be trusted, and clever only where judgment is actually
-needed.
+I built it to be predictable where it has to be trusted, and to use judgment only where judgment
+is actually needed.
 
 - **Personal data is stripped first, by plain code — not the model.** Anything sensitive is gone
   before a single figure reaches an AI. Because that step is plain code it's predictable and
@@ -65,7 +64,7 @@ needed.
 - **Everything is lined up to one shape.** Different providers name the same thing five ways; one
   agreed shape is the source of truth, so the final view compares like with like. That's a
   canonical data model, in miniature.
-- **The rule I'd put on the wall: flag, don't fabricate.** A second look judges each reading, hard
+- **The core rule: flag, don't fabricate.** A second look judges each reading, hard
   rules catch impossible values, and anything the system isn't sure about is flagged for a human —
   it never quietly guesses. When the output is money, that is the rule that matters most, and it's
   the maker-checker discipline every ledger already runs on.
@@ -89,8 +88,8 @@ the [feedback loops](./FEEDBACK_LOOPS.md) catch it and it gets fixed once, for g
 | A person signs off any number that's set | Maker-checker on anything that touches the record |
 
 That column on the right is why this sits on a profile and not just in a private folder. The
-domain is personal finance. The engineering — and the judgment about what makes a figure
-trustworthy rather than merely produced — is what a bank is trying to buy.
+domain is personal finance. The engineering, and the judgment about what makes a figure
+trustworthy rather than just produced, is what a bank is trying to buy.
 
 ---
 

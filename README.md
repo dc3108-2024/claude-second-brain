@@ -9,9 +9,9 @@ work you do today compounds into better, faster output next month.
 
 ## Three builds, up close
 
-Start here. Each is a real build, walked through the way I think about it — the strategic
-call first, then the mechanism one click in. Together they're one view of how agentic AI
-earns a place in regulated finance, from someone who's delivered inside those rules.
+Start here. Each is a real build, walked through the way I think about it - the strategic
+call first, then the mechanism a click in. Together they show where agentic AI fits in
+regulated finance, from someone who has delivered inside those rules.
 
 - **[JIRA PM Factory →](./docs/builds/JIRA_PM_FACTORY.md)** — a stakeholder conversation
   becomes a ready, dependency-mapped JIRA backlog the same day, with a person signing off at
@@ -25,7 +25,7 @@ earns a place in regulated finance, from someone who's delivered inside those ru
 
 ## What this has produced
 
-Not demos. Not examples. Real features, built end to end, with the skills in this repo:
+Real features, built end to end with the skills in this repo - not demos or examples:
 
 ### Voice recording → structured JIRA backlog in under 5 minutes
 
@@ -63,9 +63,7 @@ handing off at any step.
 
 ## The factory model
 
-The first skill takes weeks. The most recent took a weekend.
-
-Same complexity. Different infrastructure maturity.
+The first skill took weeks. A recent one took a weekend - the same complexity, on more mature infrastructure.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -88,8 +86,7 @@ Same complexity. Different infrastructure maturity.
                      └────────────────┘
 ```
 
-A step that was failing 89% of the time was fixed once and never failed again.
-The monitor caught it. The feedback loop surfaced it. The fix was locked in.
+A step that was failing 89% of the time was fixed once and hasn't failed since. The monitor caught it, the feedback loop surfaced it, and the fix was locked in so it can't quietly regress.
 
 ---
 
@@ -402,9 +399,9 @@ each an instance of one reusable six-stage pattern:
 INSTRUMENT → STORE → ANALYSE → SURFACE → ACTUATE → RATCHET
 ```
 
-The ratchet stage is what separates *self-improving* from merely *self-healing*:
-self-healing systems fix the same fault forever; a ratchet (enforcement tests,
-weight tables, error memory) makes each fix permanent, so effort compounds.
+The ratchet stage is what makes the system self-improving rather than only self-healing.
+A self-healing system keeps fixing the same fault; a ratchet (enforcement tests,
+weight tables, error memory) makes each fix permanent, so the effort compounds.
 
 **[→ docs/FEEDBACK_LOOPS.md](./docs/FEEDBACK_LOOPS.md)** — the full visual map:
 Mermaid diagrams for every loop family, the 12-loop index (auto vs HITL), and
@@ -436,7 +433,7 @@ Instrument → Analyse → Queue → HITL Review → Enforce → Reset → repea
 
 The monitor also runs as a live HTTP dashboard (`monitor_server.py`) with sub-typed badges per failure class. See [`monitor/README.md`](./monitor/README.md) for the full architecture.
 
-This is the answer to "how do you govern AI in production?" — not a policy document, but a running system with time-stamped evidence.
+This is a practical answer to governing AI in production - a running system with time-stamped evidence rather than a policy document.
 
 ---
 
@@ -575,9 +572,9 @@ micro-skills, which MCP integrations unlock the most, and what not to build.
 
 ## Philosophy
 
-Skills are cheap to build and infinitely reusable. Memory accumulates without effort.
-Config is version-controlled and portable. The result is a setup where each session
-compounds the ones before it — context grows, quality improves, and the gap between
-"I need X" and "X is done" keeps shrinking.
+Skills are cheap to build and reusable, memory accumulates without effort, and config
+is version-controlled and portable. The result is a setup where each session builds on
+the ones before it - context grows, quality improves, and the time between needing
+something and having it done keeps shrinking.
 
-That's the difference between using AI and operating it.
+That is what it means to operate AI rather than just use it.
