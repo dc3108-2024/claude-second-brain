@@ -3,12 +3,12 @@
 Every bank is trying to buy roughly the same thing: a pipeline that reads messy documents from a
 dozen source systems, survives their format changes, and produces figures people can act on. The
 *functional* version of that is easy - a model reads a document and returns numbers. The
-*trustworthy* version is the harder and much larger job. I built a small version over my own
+*trustworthy* version is the much larger job. I built a small version over my own
 financial statements to show I understand the difference.
 
 The honest reason it exists: my money lived in a dozen places, each with its own statement
 layout, and by the time I'd added it up by hand it was already out of date, so I kept deciding on
-a stale picture. The useful part wasn't the admin. It was realising this is the same problem a
+a stale picture. The useful part wasn't the admin; it was noticing this is the same problem a
 bank has - swap "my accounts" for "counterparty statements" or "sub-ledger extracts" and it's the
 document-ingestion-and-reconciliation work financial institutions spend heavily on.
 
@@ -60,7 +60,7 @@ is actually needed.
   processing, not after — the same order a bank has to do it in.
 - **Reading the figures out doesn't depend on a fixed template.** Instead of a brittle parser per
   provider, the model reads the document and returns the fields — so a new provider or a changed
-  layout doesn't break it. Resilience to format drift is the whole reason enterprises want this.
+  layout doesn't break it. Resilience to format drift is much of why enterprises want this.
 - **Everything is lined up to one shape.** Different providers name the same thing five ways; one
   agreed shape is the source of truth, so the final view compares like with like. That's a
   canonical data model, in miniature.

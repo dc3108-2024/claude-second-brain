@@ -20,8 +20,8 @@ engineer.
 Shipping the model is not the hard part. The hard part is everything that keeps it trustworthy
 after launch - how you measure quality, how you catch it slipping, how you make an improvement
 permanent. That discipline is the difference between an AI demo and an AI product, and it's
-exactly what a regulated programme has to stand up. Done right, you get something you can put in
-front of an auditor. Done poorly, you get a liability that looked fine in the demo.
+exactly what a regulated programme has to stand up. Done right, the result is something you can
+put in front of an auditor. Done poorly, it's a liability.
 
 Take a concrete one. An AI step reads loan applications and pulls out the fields that matter. It
 works on day one. Then a lender changes a document layout, extraction quality slips, and for weeks

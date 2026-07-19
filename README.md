@@ -576,5 +576,3 @@ Skills are cheap to build and reusable, memory accumulates without effort, and c
 is version-controlled and portable. The result is a setup where each session builds on
 the ones before it - context grows, quality improves, and the time between needing
 something and having it done keeps shrinking.
-
-That is what it means to operate AI rather than just use it.

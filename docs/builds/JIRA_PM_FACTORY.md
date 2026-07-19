@@ -3,8 +3,7 @@
 A view I've come to after fifteen years delivering in regulated banking, insurance and pensions:
 the expensive delay in a programme is rarely the build. It's upstream - in the days of senior
 judgment spent turning a conversation into a backlog a team can actually pull. That's the work I
-put AI on: not the hardest work, but the slowest and most repeated, and the step that gates
-everything after it.
+put AI on. It's the slowest and most repeated step, and it gates everything after it.
 
 I'd led AI-tooling adoption across delivery squads before I built this, so I wasn't guessing at
 what automates cleanly. And I built this one end to end myself, for a reason I hold to: I don't

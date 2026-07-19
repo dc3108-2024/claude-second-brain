@@ -1,7 +1,7 @@
-# The lab and the bank — one discipline, two proving grounds
+# The lab and the bank — how my personal builds map to enterprise delivery
 
-The lab and the bank are one discipline on two proving grounds. The personal builds are the part
-most people misread.
+The lab and the bank are the same discipline in two settings. Most people misread the personal
+builds.
 
 ---
 
@@ -45,10 +45,8 @@ that has to maintain it afterwards.
 
 ## The method
 
-Lab-proven, then governed. I bring enterprises patterns I've run at my own risk and then shipped
-under real governance - not ones I've only read about.
-
-So with anyone selling AI experience, it's worth checking whether the patterns have actually been
-run and governed in production, or only read about.
+Lab-proven, then governed. The patterns I bring to a client are ones I've run at my own risk and
+shipped under real governance. With anyone selling AI experience, it's worth checking that the
+patterns have actually been run in production, not just read about.
 
 **[← Back to the builds](../../README.md#three-builds-up-close)**
